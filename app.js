@@ -80,46 +80,48 @@ document.getElementById('newsForm').addEventListener('submit', async function (e
 
     animateProgress();
 
-try {
-    const response = await fetch(API_ENDPOINT, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ text: newsText })
-    });
+    try {
+        const response = await fetch(API_ENDPOINT, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ text: newsText })
+        });
 
-    const data = await response.json();
-    console.log("Raw API response:", data);
+        const data = await response.json();
+        console.log("Raw API response:", data);
 
-    let aiResponse = data.body || data;
-    if (typeof aiResponse === "string") {
-        try {
-            aiResponse = JSON.parse(aiResponse);
-        } catch (e) {
-            console.error("Failed to parse aiResponse:", aiResponse);
-        }
-    }
+        // Parse body safely
+        const parsedBody = data.body ? JSON.parse(data.body) : {};
+        const firstKey = Object.keys(parsedBody)[0];
+        const aiText = firstKey ? parsedBody[firstKey] : "No response text received";
 
-    const classification = aiResponse.classification || "Uncertain";
-    const confidence = aiResponse.confidence || 50;
-    const isFake = classification.toLowerCase().includes("false");
+        console.log("AI returned text:", aiText);
 
-    const trustInfo = getTrustBadge(confidence, isFake);
+        // Extract classification and confidence if present
+        let classificationMatch = aiText.match(/Classification:\s*(.*)/i);
+        let confidenceMatch = aiText.match(/Confidence(?: Percentage)?:\s*(\d+)%/i);
 
-    resultDiv.className = 'result ' + (isFake ? 'fake' : 'real');
-    resultText.textContent = isFake ? `⚠️ ${classification}` : `✅ ${classification}`;
-    confidenceDiv.textContent = `Confidence: ${confidence}%`;
-    trustBadgeDiv.textContent = trustInfo.badge;
-    trustBadgeDiv.style.backgroundColor = trustInfo.color;
-    trustBadgeDiv.style.color = 'white';
+        const classification = classificationMatch ? classificationMatch[1] : "Uncertain";
+        const confidence = confidenceMatch ? parseInt(confidenceMatch[1]) : 50;
+        const isFake = classification.toLowerCase().includes("false");
 
-} catch (error) {
-    resultText.textContent = "❌ Error connecting to the AI service.";
-    resultDiv.className = 'result fake';
-    console.error("Error:", error);
-}
- finally {
+        // Update UI
+        const trustInfo = getTrustBadge(confidence, isFake);
+
+        resultDiv.className = 'result ' + (isFake ? 'fake' : 'real');
+        resultText.textContent = aiText; // Show full AI output
+        confidenceDiv.textContent = `Confidence: ${confidence}%`;
+        trustBadgeDiv.textContent = trustInfo.badge;
+        trustBadgeDiv.style.backgroundColor = trustInfo.color;
+        trustBadgeDiv.style.color = 'white';
+
+    } catch (error) {
+        resultText.textContent = "❌ Error connecting to the AI service.";
+        resultDiv.className = 'result fake';
+        console.error("Error:", error);
+    } finally {
         loadingDiv.style.display = 'none';
         submitBtn.disabled = false;
         submitBtn.style.opacity = '1';
