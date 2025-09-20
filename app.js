@@ -1,4 +1,18 @@
-const API_ENDPOINT = "https://btg76jdj06.execute-api.ap-southeast-2.amazonaws.com/works";
+// Original API endpoint
+const ORIGINAL_API_ENDPOINT = "https://btg76jdj06.execute-api.ap-southeast-2.amazonaws.com/works";
+
+// Try different CORS proxies if one doesn't work:
+// Option 1: AllOrigins
+const API_ENDPOINT = "https://api.allorigins.win/raw?url=" + encodeURIComponent(ORIGINAL_API_ENDPOINT);
+
+// Option 2: CORS Anywhere (may need demo access)
+// const API_ENDPOINT = "https://cors-anywhere.herokuapp.com/" + ORIGINAL_API_ENDPOINT;
+
+// Option 3: Corsproxy.io
+// const API_ENDPOINT = "https://corsproxy.io/?" + encodeURIComponent(ORIGINAL_API_ENDPOINT);
+
+// Use your original endpoint once CORS is properly configured
+// const API_ENDPOINT = ORIGINAL_API_ENDPOINT;
 
 // Theme toggle functionality
 function toggleTheme() {
@@ -81,30 +95,44 @@ document.getElementById('newsForm').addEventListener('submit', async function (e
     animateProgress();
 
     try {
+        console.log("Sending request to:", API_ENDPOINT);
+        console.log("Request payload:", { text: newsText });
+
         const response = await fetch(API_ENDPOINT, {
             method: "POST",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                "Accept": "application/json"
             },
             body: JSON.stringify({ text: newsText })
         });
 
+        console.log("Response status:", response.status);
+        console.log("Response headers:", [...response.headers.entries()]);
+
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+
         const data = await response.json();
+        console.log("Response data:", data);
 
         // Check if the API response has an error or unexpected format
-        if (!response.ok || data.statusCode !== 200) {
-            throw new Error(data.body || data.message || "Unexpected API error");
+        if (data.statusCode && data.statusCode !== 200) {
+            throw new Error(data.body || data.message || "API returned error status");
         }
 
         // The actual AI response text is in data.body
         const aiText = data.body;
 
-        // Parse AI response to extract confidence and classification
+        // Parse AI response to extract confidence, classification, and reasoning
         let classificationMatch = aiText.match(/Classification:\s*[""]?(.+?)[""]?(\n|$)/i);
         let confidenceMatch = aiText.match(/Confidence Percentage:\s*(\d+)%/i);
+        let reasoningMatch = aiText.match(/\*\*Reasoning:\*\*([\s\S]*?)(?=\n\n|\*\*|$)/i);
 
         const classification = classificationMatch ? classificationMatch[1] : "Uncertain";
         const confidence = confidenceMatch ? parseInt(confidenceMatch[1]) : 50;
+        const reasoning = reasoningMatch ? reasoningMatch[1].trim() : "No detailed reasoning provided.";
 
         const isFake = classification.toLowerCase().includes("false");
 
@@ -118,6 +146,22 @@ document.getElementById('newsForm').addEventListener('submit', async function (e
         trustBadgeDiv.style.backgroundColor = trustInfo.color;
         trustBadgeDiv.style.color = 'white';
 
+        // Update reasoning box
+        const reasoningDiv = document.getElementById('reasoning');
+        const reasoningContent = document.getElementById('reasoningContent');
+
+        if (reasoningDiv && reasoningContent) {
+            // Clean up the reasoning text by removing extra markdown and formatting
+            let cleanReasoning = reasoning
+                .replace(/\*\*/g, '') // Remove bold markdown
+                .replace(/\n\s*\n/g, '\n') // Remove extra line breaks
+                .replace(/^\s+/gm, '') // Remove leading spaces from lines
+                .trim();
+
+            reasoningContent.textContent = cleanReasoning;
+            reasoningDiv.style.display = 'block';
+        }
+
     } catch (error) {
         console.error("Detailed error:", error);
         resultText.textContent = `❌ Error: ${error.message}`;
@@ -125,6 +169,12 @@ document.getElementById('newsForm').addEventListener('submit', async function (e
         confidenceDiv.textContent = '';
         trustBadgeDiv.textContent = '';
         trustBadgeDiv.style.backgroundColor = '';
+
+        // Hide reasoning box on error
+        const reasoningDiv = document.getElementById('reasoning');
+        if (reasoningDiv) {
+            reasoningDiv.style.display = 'none';
+        }
     } finally {
         loadingDiv.style.display = 'none';
         submitBtn.disabled = false;

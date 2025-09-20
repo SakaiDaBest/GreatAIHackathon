@@ -1,0 +1,55 @@
+/* Reasoning box styles */
+.reasoning-box {
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    border: 1px solid #dee2e6;
+    border-radius: 12px;
+    padding: 20px;
+    margin-top: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.reasoning-box h3 {
+    color: #495057;
+    margin: 0 0 15px 0;
+    font-size: 1.1em;
+    font-weight: 600;
+}
+
+.reasoning-box p {
+    color: #6c757d;
+    line-height: 1.6;
+    margin: 0;
+    font-size: 0.95em;
+    white-space: pre-wrap; /* Preserve line breaks */
+}
+
+/* Dark theme styles for reasoning box */
+body.dark .reasoning-box {
+    background: linear-gradient(135deg, #2d3748, #1a202c);
+    border-color: #4a5568;
+}
+
+body.dark .reasoning-box h3 {
+    color: #e2e8f0;
+}
+
+body.dark .reasoning-box p {
+    color: #a0aec0;
+}
+
+/* Animation for when box appears */
+.reasoning-box {
+    animation: slideInUp 0.4s ease-out;
+}
+
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
