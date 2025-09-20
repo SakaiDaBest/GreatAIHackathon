@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>News Detector</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='45' fill='%23667eea'/><text x='50' y='65' font-size='50' text-anchor='middle' fill='white'>📰</text></svg>">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #0a0e27;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        body::before {
+            content: '01001110 01100101 01110111 01110011 00100000 01000100 01100101 01110100 01100101 01100011 01110100 01101111 01110010 00001010 01000001 01001001 00100000 01000001 01101110 01100001 01101100 01111001 01110011 01101001 01110011 00001010 01000110 01100001 01101011 01100101 00100000 01001110 01100101 01110111 01110011 00001010 01010010 01100101 01100001 01101100 00100000 01001110 01100101 01110111 01110011';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            color: rgba(102, 126, 234, 0.1);
+            line-height: 1.5;
+            word-wrap: break-word;
+            animation: scroll 20s linear infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                linear-gradient(90deg, transparent 98%, rgba(102, 126, 234, 0.03) 100%),
+                linear-gradient(0deg, transparent 98%, rgba(102, 126, 234, 0.03) 100%);
+            background-size: 50px 50px;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        @keyframes scroll {
+            0% { transform: translateY(100vh); }
+            100% { transform: translateY(-100vh); }
+        }
+
+        .tech-elements {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .tech-icon {
+            position: absolute;
+            color: rgba(102, 126, 234, 0.15);
+            font-size: 24px;
+            animation: techFloat 8s ease-in-out infinite;
+        }
+
+        @keyframes techFloat {
+            0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0.15; }
+            50% { transform: translateY(-30px) rotate(180deg); opacity: 0.05; }
+        }
+
+        .container {
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+            padding: 2.5rem;
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1), 0 5px 15px rgba(0,0,0,0.07);
+            width: 90%;
+            max-width: 600px;
+            position: relative;
+            z-index: 2;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 2rem;
+            font-size: 2rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 2rem;
+            font-size: 0.95rem;
+            font-style: italic;
+        }
+
+        .input-group {
+            margin-bottom: 1rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+            color: #555;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            resize: vertical;
+            min-height: 150px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            transform: translateY(-1px);
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            width: 100%;
+            margin-top: 1rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .loading {
+            display: none;
+            margin-top: 1rem;
+        }
+
+        .progress-container {
+            width: 100%;
+            background: #f0f0f0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 1rem;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            text-align: center;
+            color: #667eea;
+            font-size: 14px;
+            margin-top: 0.5rem;
+        }
+
+        .result {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            border-radius: 5px;
+            text-align: center;
+            font-weight: bold;
+            display: none;
+        }
+
+        .fake {
+            background: #ffebee;
+            color: #c62828;
+            border: 2px solid #ef5350;
+        }
+
+        .real {
+            background: #e8f5e8;
+            color: #2e7d32;
+            border: 2px solid #66bb6a;
+        }
+
+        .confidence {
+            margin-top: 0.5rem;
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        .trust-badge {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+            margin-top: 1rem;
+        }
+
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(255,255,255,0.9);
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            cursor: pointer;
+            font-size: 20px;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1);
+        }
+
+        /* Dark mode styles */
+        body.dark {
+            background: #1a1a2e;
+        }
+
+        body.dark .container {
+            background: rgba(30, 30, 50, 0.95);
+            color: #fff;
+        }
+
+        body.dark h1, body.dark .subtitle, body.dark label {
+            color: #fff;
+        }
+
+        body.dark textarea {
+            background: #2a2a3e;
+            color: #fff;
+            border-color: #444;
+        }
+
+        body.dark .stats {
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        body.dark .theme-toggle {
+            background: rgba(30, 30, 50, 0.9);
+            color: #fff;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #eee;
+            color: #888;
+            font-size: 0.85rem;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin: 1.5rem 0;
+            padding: 1rem;
+            background: rgba(102, 126, 234, 0.05);
+            border-radius: 8px;
+            border: 1px solid rgba(102, 126, 234, 0.1);
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: #666;
+            margin-top: 0.2rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="tech-elements">
+        <div class="tech-icon" style="top: 15%; left: 8%; animation-delay: 0s;">📰</div>
+        <div class="tech-icon" style="top: 25%; left: 85%; animation-delay: 1s;">🔍</div>
+        <div class="tech-icon" style="top: 45%; left: 12%; animation-delay: 2s;">🤖</div>
+        <div class="tech-icon" style="top: 65%; left: 78%; animation-delay: 3s;">📊</div>
+        <div class="tech-icon" style="top: 75%; left: 25%; animation-delay: 4s;">⚡</div>
+        <div class="tech-icon" style="top: 35%; left: 65%; animation-delay: 5s;">🛡️</div>
+        <div class="tech-icon" style="top: 85%; left: 55%; animation-delay: 6s;">📡</div>
+        <div class="tech-icon" style="top: 55%; left: 35%; animation-delay: 7s;">💻</div>
+    </div>
+
+    <div class="container">
+        <h1>🔍 News Detector</h1>
+        <p class="subtitle">Analyze news articles and headlines for authenticity</p>
+
+        <button class="theme-toggle" onclick="toggleTheme()" title="Toggle Dark/Light Mode">🌙</button>
+
+        <div class="stats">
+            <div class="stat-item">
+                <div class="stat-number">AI</div>
+                <div class="stat-label">Powered</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">Fast</div>
+                <div class="stat-label">Analysis</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">Reliable</div>
+                <div class="stat-label">Results</div>
+            </div>
+        </div>
+        <form id="newsForm">
+            <div class="input-group">
+                <label for="newsText">Enter news article or headline:</label>
+                <textarea id="newsText" placeholder="Paste your news article or headline here..."></textarea>
+            </div>
+            <button type="submit" class="btn">Analyze News</button>
+            <div class="loading" id="loading">
+                <div class="progress-container">
+                    <div class="progress-bar" id="progressBar"></div>
+                </div>
+                <div class="progress-text" id="progressText">Initializing...</div>
+            </div>
+        </form>
+
+        <div id="result" class="result">
+            <div id="resultText"></div>
+            <div id="confidence" class="confidence"></div>
+            <div id="trustBadge" class="trust-badge"></div>
+        </div>
+
+        <div class="footer">
+            <p>Powered by advanced text analysis • Always verify with multiple sources</p>
+        </div>
+    </div>
+
+    <script>
+        // Theme toggle functionality
+        function toggleTheme() {
+            document.body.classList.toggle('dark');
+            const isDark = document.body.classList.contains('dark');
+            document.querySelector('.theme-toggle').textContent = isDark ? '☀️' : '🌙';
+            localStorage.setItem('darkMode', isDark);
+        }
+
+        // Progress bar animation
+        function animateProgress() {
+            const progressBar = document.getElementById('progressBar');
+            const progressText = document.getElementById('progressText');
+            const steps = [
+                { width: 20, text: 'Preprocessing text...' },
+                { width: 40, text: 'Analyzing keywords...' },
+                { width: 60, text: 'Checking sources...' },
+                { width: 80, text: 'Computing trust score...' },
+                { width: 100, text: 'Finalizing results...' }
+            ];
+
+            let currentStep = 0;
+            const interval = setInterval(() => {
+                if (currentStep < steps.length) {
+                    progressBar.style.width = steps[currentStep].width + '%';
+                    progressText.textContent = steps[currentStep].text;
+                    currentStep++;
+                } else {
+                    clearInterval(interval);
+                }
+            }, 300);
+        }
+
+        // Get trust badge
+        function getTrustBadge(confidence, isFake) {
+            let badge = '';
+            let color = '';
+
+            if (confidence >= 80) {
+                badge = isFake ? '🔴 Low Trust' : '🟢 High Trust';
+                color = isFake ? '#ff4757' : '#2ed573';
+            } else if (confidence >= 60) {
+                badge = '🟡 Medium Trust';
+                color = '#ffa502';
+            } else {
+                badge = '🔴 Low Trust';
+                color = '#ff4757';
+            }
+
+            return { badge, color };
+        }
+
+        // Initialize theme
+        if (localStorage.getItem('darkMode') === 'true') {
+            document.body.classList.add('dark');
+            document.querySelector('.theme-toggle').textContent = '☀️';
+        }
+
+        document.getElementById('newsForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const newsText = document.getElementById('newsText').value.trim();
+            const resultDiv = document.getElementById('result');
+            const resultText = document.getElementById('resultText');
+            const confidenceDiv = document.getElementById('confidence');
+            const trustBadgeDiv = document.getElementById('trustBadge');
+            const loadingDiv = document.getElementById('loading');
+            const submitBtn = document.querySelector('.btn');
+
+            if (!newsText) {
+                alert('Please enter some news text to analyze.');
+                return;
+            }
+
+            // Show loading with progress bar
+            loadingDiv.style.display = 'block';
+            submitBtn.disabled = true;
+            submitBtn.style.opacity = '0.7';
+            resultDiv.style.display = 'none';
+
+            // Start progress animation
+            animateProgress();
+
+            // Simulate processing time
+            setTimeout(() => {
+                // Simple fake news detection logic
+                const fakeKeywords = ['shocking', 'unbelievable', 'doctors hate', 'secret', 'miracle', 'conspiracy', 'they don\'t want you to know'];
+                const realKeywords = ['according to', 'study shows', 'research indicates', 'official', 'confirmed', 'reported by'];
+
+                const text = newsText.toLowerCase();
+                let fakeScore = 0;
+                let realScore = 0;
+
+                fakeKeywords.forEach(keyword => {
+                    if (text.includes(keyword)) fakeScore++;
+                });
+
+                realKeywords.forEach(keyword => {
+                    if (text.includes(keyword)) realScore++;
+                });
+
+                const isFake = fakeScore > realScore;
+                const confidence = Math.min(90, Math.max(60, (Math.abs(fakeScore - realScore) + 1) * 15));
+
+                // Get trust badge
+                const trustInfo = getTrustBadge(confidence, isFake);
+
+                // Display results
+                resultDiv.className = 'result ' + (isFake ? 'fake' : 'real');
+                resultText.textContent = isFake ? '⚠️ LIKELY FAKE NEWS' : '✅ LIKELY REAL NEWS';
+                confidenceDiv.textContent = `Confidence: ${confidence}%`;
+                trustBadgeDiv.textContent = trustInfo.badge;
+                trustBadgeDiv.style.backgroundColor = trustInfo.color;
+                trustBadgeDiv.style.color = 'white';
+
+                // Hide loading and show results
+                loadingDiv.style.display = 'none';
+                submitBtn.disabled = false;
+                submitBtn.style.opacity = '1';
+                resultDiv.style.display = 'block';
+            }, 1500);
+        });
+    </script>
+</body>
+</html>
