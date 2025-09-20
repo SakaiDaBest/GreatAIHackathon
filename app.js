@@ -1,5 +1,6 @@
 const API_ENDPOINT = "https://btg76jdj06.execute-api.ap-southeast-2.amazonaws.com/works";
 
+// Theme toggle functionality
 function toggleTheme() {
     document.body.classList.toggle('dark');
     const isDark = document.body.classList.contains('dark');
@@ -7,6 +8,7 @@ function toggleTheme() {
     localStorage.setItem('darkMode', isDark);
 }
 
+// Progress bar animation
 function animateProgress() {
     const progressBar = document.getElementById('progressBar');
     const progressText = document.getElementById('progressText');
@@ -29,17 +31,40 @@ function animateProgress() {
     }, 400);
 }
 
+// Get trust badge
+function getTrustBadge(confidence, isFake) {
+    let badge = '';
+    let color = '';
+
+    if (confidence >= 80) {
+        badge = isFake ? '🔴 Low Trust' : '🟢 High Trust';
+        color = isFake ? '#ff4757' : '#2ed573';
+    } else if (confidence >= 60) {
+        badge = '🟡 Medium Trust';
+        color = '#ffa502';
+    } else {
+        badge = '🔴 Low Trust';
+        color = '#ff4757';
+    }
+
+    return { badge, color };
+}
+
+// Restore theme
 if (localStorage.getItem('darkMode') === 'true') {
     document.body.classList.add('dark');
     document.querySelector('.theme-toggle').textContent = '☀️';
 }
 
+// Form submission
 document.getElementById('newsForm').addEventListener('submit', async function (e) {
     e.preventDefault();
 
     const newsText = document.getElementById('newsText').value.trim();
     const resultDiv = document.getElementById('result');
     const resultText = document.getElementById('resultText');
+    const confidenceDiv = document.getElementById('confidence');
+    const trustBadgeDiv = document.getElementById('trustBadge');
     const loadingDiv = document.getElementById('loading');
     const submitBtn = document.querySelector('.btn');
 
@@ -65,14 +90,41 @@ document.getElementById('newsForm').addEventListener('submit', async function (e
         });
 
         const data = await response.json();
-        const aiResponse = data.body || "No response received";
 
-        // 🖨 Just print the full response on the page
-        resultText.textContent = aiResponse;
+        // Check if the API response has an error or unexpected format
+        if (!response.ok || data.statusCode !== 200) {
+            throw new Error(data.body || data.message || "Unexpected API error");
+        }
+
+        // The actual AI response text is in data.body
+        const aiText = data.body;
+
+        // Parse AI response to extract confidence and classification
+        let classificationMatch = aiText.match(/Classification:\s*[""]?(.+?)[""]?(\n|$)/i);
+        let confidenceMatch = aiText.match(/Confidence Percentage:\s*(\d+)%/i);
+
+        const classification = classificationMatch ? classificationMatch[1] : "Uncertain";
+        const confidence = confidenceMatch ? parseInt(confidenceMatch[1]) : 50;
+
+        const isFake = classification.toLowerCase().includes("false");
+
+        // Update UI
+        const trustInfo = getTrustBadge(confidence, isFake);
+
+        resultDiv.className = 'result ' + (isFake ? 'fake' : 'real');
+        resultText.textContent = isFake ? `⚠️ ${classification}` : `✅ ${classification}`;
+        confidenceDiv.textContent = `Confidence: ${confidence}%`;
+        trustBadgeDiv.textContent = trustInfo.badge;
+        trustBadgeDiv.style.backgroundColor = trustInfo.color;
+        trustBadgeDiv.style.color = 'white';
 
     } catch (error) {
-        resultText.textContent = "❌ Error connecting to the AI service.";
-        console.error("Error:", error);
+        console.error("Detailed error:", error);
+        resultText.textContent = `❌ Error: ${error.message}`;
+        resultDiv.className = 'result fake';
+        confidenceDiv.textContent = '';
+        trustBadgeDiv.textContent = '';
+        trustBadgeDiv.style.backgroundColor = '';
     } finally {
         loadingDiv.style.display = 'none';
         submitBtn.disabled = false;
