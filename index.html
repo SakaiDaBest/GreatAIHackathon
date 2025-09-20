@@ -244,6 +244,46 @@
             margin-top: 1rem;
         }
 
+        /* Reasoning box styles */
+        .reasoning-box {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border: 1px solid #dee2e6;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            animation: slideInUp 0.4s ease-out;
+        }
+
+        .reasoning-box h3 {
+            color: #495057;
+            margin: 0 0 15px 0;
+            font-size: 1.1em;
+            font-weight: 600;
+        }
+
+        .reasoning-box p {
+            color: #6c757d;
+            line-height: 1.6;
+            margin: 0;
+            font-size: 0.95em;
+            white-space: pre-wrap;
+            text-align: left;
+            font-weight: normal;
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
         .theme-toggle {
             position: fixed;
             top: 20px;
@@ -292,6 +332,20 @@
             color: #fff;
         }
 
+        /* Dark theme styles for reasoning box */
+        body.dark .reasoning-box {
+            background: linear-gradient(135deg, #2d3748, #1a202c);
+            border-color: #4a5568;
+        }
+
+        body.dark .reasoning-box h3 {
+            color: #e2e8f0;
+        }
+
+        body.dark .reasoning-box p {
+            color: #a0aec0;
+        }
+
         .footer {
             text-align: center;
             margin-top: 2rem;
@@ -299,6 +353,11 @@
             border-top: 1px solid #eee;
             color: #888;
             font-size: 0.85rem;
+        }
+
+        body.dark .footer {
+            border-top-color: #444;
+            color: #bbb;
         }
 
         .stats {
@@ -325,6 +384,10 @@
             font-size: 0.8rem;
             color: #666;
             margin-top: 0.2rem;
+        }
+
+        body.dark .stat-label {
+            color: #bbb;
         }
     </style>
 </head>
@@ -380,15 +443,17 @@
             <div id="trustBadge" class="trust-badge"></div>
         </div>
 
+        <!-- Moved reasoning box inside container -->
+        <div id="reasoning" class="reasoning-box" style="display: none;">
+            <h3>📝 Analysis Details</h3>
+            <p id="reasoningContent"></p>
+        </div>
+
         <div class="footer">
             <p>Powered by advanced text analysis • Always verify with multiple sources</p>
         </div>
     </div>
-<!-- Add this after your existing result div -->
-    <div id="reasoning" class="reasoning-box" style="display: none;">
-        <h3>📝 Analysis Details</h3>
-        <p id="reasoningContent"></p>
-    </div>
+
     <script src="app.js"></script>
 </body>
 </html>
