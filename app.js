@@ -1,15 +1,17 @@
 // Original API endpoint
 const ORIGINAL_API_ENDPOINT = "https://btg76jdj06.execute-api.ap-southeast-2.amazonaws.com/works";
 
-// Try different CORS proxies if one doesn't work:
-// Option 1: AllOrigins
-const API_ENDPOINT = "https://api.allorigins.win/raw?url=" + encodeURIComponent(ORIGINAL_API_ENDPOINT);
+// CORS Proxy options (try in order):
 
-// Option 2: CORS Anywhere (may need demo access)
-// const API_ENDPOINT = "https://cors-anywhere.herokuapp.com/" + ORIGINAL_API_ENDPOINT;
+// Option 1: CORS Anywhere (requires one-time demo access request)
+// Visit https://cors-anywhere.herokuapp.com/corsdemo first, then click "Request temporary access"
+const API_ENDPOINT = "https://cors-anywhere.herokuapp.com/" + ORIGINAL_API_ENDPOINT;
 
-// Option 3: Corsproxy.io
+// Option 2: Corsproxy.io (backup)
 // const API_ENDPOINT = "https://corsproxy.io/?" + encodeURIComponent(ORIGINAL_API_ENDPOINT);
+
+// Option 3: AllOrigins (doesn't work well with POST)
+// const API_ENDPOINT = "https://api.allorigins.win/raw?url=" + encodeURIComponent(ORIGINAL_API_ENDPOINT);
 
 // Use your original endpoint once CORS is properly configured
 // const API_ENDPOINT = ORIGINAL_API_ENDPOINT;
@@ -96,7 +98,10 @@ document.getElementById('newsForm').addEventListener('submit', async function (e
 
     try {
         console.log("Sending request to:", API_ENDPOINT);
-        console.log("Request payload:", { text: newsText });
+        console.log("Request payload:", JSON.stringify({ text: newsText }));
+
+        const requestBody = JSON.stringify({ text: newsText });
+        console.log("Request body length:", requestBody.length);
 
         const response = await fetch(API_ENDPOINT, {
             method: "POST",
@@ -104,7 +109,7 @@ document.getElementById('newsForm').addEventListener('submit', async function (e
                 "Content-Type": "application/json",
                 "Accept": "application/json"
             },
-            body: JSON.stringify({ text: newsText })
+            body: requestBody
         });
 
         console.log("Response status:", response.status);
