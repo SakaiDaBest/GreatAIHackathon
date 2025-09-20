@@ -1,4 +1,4 @@
-const API_ENDPOINT = "https://bvrzv4lsg9.execute-api.ap-southeast-2.amazonaws.com";
+const API_ENDPOINT = "https://btg76jdj06.execute-api.ap-southeast-2.amazonaws.com/works";
 
 // Theme toggle functionality
 function toggleTheme() {
