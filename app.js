@@ -1,4 +1,20 @@
-const API_ENDPOINT = "https://btg76jdj06.execute-api.ap-southeast-2.amazonaws.com/works";
+// Original API endpoint
+const ORIGINAL_API_ENDPOINT = "https://btg76jdj06.execute-api.ap-southeast-2.amazonaws.com/works";
+
+// CORS Proxy options (try in order):
+
+// Option 1: CORS Anywhere (requires one-time demo access request)
+// Visit https://cors-anywhere.herokuapp.com/corsdemo first, then click "Request temporary access"
+const API_ENDPOINT = "https://cors-anywhere.herokuapp.com/" + ORIGINAL_API_ENDPOINT;
+
+// Option 2: Corsproxy.io (backup)
+// const API_ENDPOINT = "https://corsproxy.io/?" + encodeURIComponent(ORIGINAL_API_ENDPOINT);
+
+// Option 3: AllOrigins (doesn't work well with POST)
+// const API_ENDPOINT = "https://api.allorigins.win/raw?url=" + encodeURIComponent(ORIGINAL_API_ENDPOINT);
+
+// Use your original endpoint once CORS is properly configured
+// const API_ENDPOINT = ORIGINAL_API_ENDPOINT;
 
 // Theme toggle functionality
 function toggleTheme() {
@@ -50,34 +66,6 @@ function getTrustBadge(confidence, isFake) {
     return { badge, color };
 }
 
-// Modal functions
-function closeModal(event) {
-    if (event && event.target !== event.currentTarget) return;
-    document.getElementById('analysisModal').style.display = 'none';
-}
-
-// Generate detailed analysis
-function generateAnalysisDetails(aiResponse, confidence, isFake) {
-    const analysisSummary = document.getElementById('analysisSummary');
-    const percentageDisplay = document.getElementById('percentageDisplay');
-
-    // Display percentage breakdown
-    const fakePercentage = isFake ? confidence : (100 - confidence);
-    const realPercentage = 100 - fakePercentage;
-    percentageDisplay.innerHTML = `<strong>Fake: ${fakePercentage}%</strong> | <strong>Real: ${realPercentage}%</strong>`;
-
-    // Extract reasoning from AI response
-    const reasoningMatch = aiResponse.match(/Reasoning:\s*(.+?)(?=\n\n|\nClassification|$)/s);
-    const reasoning = reasoningMatch ? reasoningMatch[1].trim() : '';
-
-    // Use AI reasoning as summary or create fallback
-    if (reasoning) {
-        analysisSummary.textContent = reasoning;
-    } else {
-        analysisSummary.textContent = `AI analysis completed with ${confidence}% confidence. The text was classified as ${isFake ? 'potentially false' : 'likely authentic'} based on language patterns and content structure.`;
-    }
-}
-
 // Restore theme
 if (localStorage.getItem('darkMode') === 'true') {
     document.body.classList.add('dark');
@@ -109,30 +97,47 @@ document.getElementById('newsForm').addEventListener('submit', async function (e
     animateProgress();
 
     try {
+        console.log("Sending request to:", API_ENDPOINT);
+        console.log("Request payload:", JSON.stringify({ text: newsText }));
+
+        const requestBody = JSON.stringify({ text: newsText });
+        console.log("Request body length:", requestBody.length);
+
         const response = await fetch(API_ENDPOINT, {
             method: "POST",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                "Accept": "application/json"
             },
-            body: JSON.stringify({ text: newsText })
+            body: requestBody
         });
 
+        console.log("Response status:", response.status);
+        console.log("Response headers:", [...response.headers.entries()]);
+
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+
         const data = await response.json();
+        console.log("Response data:", data);
 
         // Check if the API response has an error or unexpected format
-        if (!response.ok || data.statusCode !== 200) {
-            throw new Error(data.body || data.message || "Unexpected API error");
+        if (data.statusCode && data.statusCode !== 200) {
+            throw new Error(data.body || data.message || "API returned error status");
         }
 
         // The actual AI response text is in data.body
         const aiText = data.body;
 
-        // Parse AI response to extract confidence and classification
+        // Parse AI response to extract confidence, classification, and reasoning
         let classificationMatch = aiText.match(/Classification:\s*[""]?(.+?)[""]?(\n|$)/i);
         let confidenceMatch = aiText.match(/Confidence Percentage:\s*(\d+)%/i);
+        let reasoningMatch = aiText.match(/\*\*Reasoning:\*\*([\s\S]*?)(?=\n\n|\*\*|$)/i);
 
         const classification = classificationMatch ? classificationMatch[1] : "Uncertain";
         const confidence = confidenceMatch ? parseInt(confidenceMatch[1]) : 50;
+        const reasoning = reasoningMatch ? reasoningMatch[1].trim() : "No detailed reasoning provided.";
 
         const isFake = classification.toLowerCase().includes("false");
 
@@ -146,9 +151,28 @@ document.getElementById('newsForm').addEventListener('submit', async function (e
         trustBadgeDiv.style.backgroundColor = trustInfo.color;
         trustBadgeDiv.style.color = 'white';
 
-        // Generate detailed analysis
-        generateAnalysisDetails(aiText, confidence, isFake);
-        document.getElementById('analysisModal').style.display = 'flex';
+        // Store data for modal and make trust badge clickable
+        trustBadgeDiv.style.cursor = 'pointer';
+        trustBadgeDiv.onclick = () => openModal(confidence, reasoning, classification);
+
+        // Update modal data
+        const percentageDisplay = document.getElementById('percentageDisplay');
+        const analysisSummary = document.getElementById('analysisSummary');
+
+        if (percentageDisplay) {
+            percentageDisplay.textContent = `${confidence}% confidence in classification: "${classification}"`;
+        }
+
+        if (analysisSummary) {
+            // Clean up the reasoning text by removing extra markdown and formatting
+            let cleanReasoning = reasoning
+                .replace(/\*\*/g, '') // Remove bold markdown
+                .replace(/\n\s*\n/g, '\n\n') // Normalize line breaks
+                .replace(/^\s+/gm, '') // Remove leading spaces from lines
+                .trim();
+
+            analysisSummary.textContent = cleanReasoning;
+        }
 
     } catch (error) {
         console.error("Detailed error:", error);
@@ -157,6 +181,12 @@ document.getElementById('newsForm').addEventListener('submit', async function (e
         confidenceDiv.textContent = '';
         trustBadgeDiv.textContent = '';
         trustBadgeDiv.style.backgroundColor = '';
+
+        // Hide reasoning box on error
+        const reasoningDiv = document.getElementById('reasoning');
+        if (reasoningDiv) {
+            reasoningDiv.style.display = 'none';
+        }
     } finally {
         loadingDiv.style.display = 'none';
         submitBtn.disabled = false;
