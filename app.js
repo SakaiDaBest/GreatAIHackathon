@@ -3,18 +3,12 @@ const ORIGINAL_API_ENDPOINT = "https://btg76jdj06.execute-api.ap-southeast-2.ama
 
 // CORS Proxy options (try in order):
 
-// Option 1: CORS Anywhere (requires one-time demo access request)
-// Visit https://cors-anywhere.herokuapp.com/corsdemo first, then click "Request temporary access"
-const API_ENDPOINT = "https://cors-anywhere.herokuapp.com/" + ORIGINAL_API_ENDPOINT;
+// Use your original endpoint now that CORS is fixed in Lambda
+const API_ENDPOINT = ORIGINAL_API_ENDPOINT;
 
-// Option 2: Corsproxy.io (backup)
+// Keep CORS proxy as backup options (commented out)
+// const API_ENDPOINT = "https://cors-anywhere.herokuapp.com/" + ORIGINAL_API_ENDPOINT;
 // const API_ENDPOINT = "https://corsproxy.io/?" + encodeURIComponent(ORIGINAL_API_ENDPOINT);
-
-// Option 3: AllOrigins (doesn't work well with POST)
-// const API_ENDPOINT = "https://api.allorigins.win/raw?url=" + encodeURIComponent(ORIGINAL_API_ENDPOINT);
-
-// Use your original endpoint once CORS is properly configured
-// const API_ENDPOINT = ORIGINAL_API_ENDPOINT;
 
 // Theme toggle functionality
 function toggleTheme() {
@@ -122,24 +116,32 @@ document.getElementById('newsForm').addEventListener('submit', async function (e
         const data = await response.json();
         console.log("Response data:", data);
 
-        // Check if the API response has an error or unexpected format
-        if (data.statusCode && data.statusCode !== 200) {
-            throw new Error(data.body || data.message || "API returned error status");
+        // The AI response is now directly in the response body (string format)
+        let aiText;
+        if (typeof data === 'string') {
+            // Response is directly the AI text
+            aiText = data;
+        } else if (data.body) {
+            // Response is in data.body
+            aiText = data.body;
+        } else {
+            throw new Error("Unexpected response format");
         }
 
-        // The actual AI response text is in data.body
-        const aiText = data.body;
+        console.log("AI Response:", aiText.substring(0, 200) + "...");
 
         // Parse AI response to extract confidence, classification, and reasoning
-        let classificationMatch = aiText.match(/Classification:\s*[""]?(.+?)[""]?(\n|$)/i);
-        let confidenceMatch = aiText.match(/Confidence Percentage:\s*(\d+)%/i);
-        let reasoningMatch = aiText.match(/\*\*Reasoning:\*\*([\s\S]*?)(?=\n\n|\*\*|$)/i);
+        let classificationMatch = aiText.match(/\*\*Classification:\*\*\s*(.+?)(?:\n|$)/i) || aiText.match(/Classification:\s*(.+?)(?:\n|$)/i);
+        let confidenceMatch = aiText.match(/\*\*Confidence Percentage:\*\*\s*(\d+)%/i) || aiText.match(/Confidence Percentage:\s*(\d+)%/i);
+        let reasoningMatch = aiText.match(/\*\*Reasoning:\*\*([\s\S]*?)$/i) || aiText.match(/Reasoning:\s*([\s\S]*?)$/i);
 
-        const classification = classificationMatch ? classificationMatch[1] : "Uncertain";
+        const classification = classificationMatch ? classificationMatch[1].trim() : "Uncertain";
         const confidence = confidenceMatch ? parseInt(confidenceMatch[1]) : 50;
-        const reasoning = reasoningMatch ? reasoningMatch[1].trim() : "No detailed reasoning provided.";
+        const reasoning = reasoningMatch ? reasoningMatch[1].trim() : aiText; // Use full text as fallback
 
-        const isFake = classification.toLowerCase().includes("false");
+        console.log("Parsed:", { classification, confidence, reasoning: reasoning.substring(0, 100) + "..." });
+
+        const isFake = classification.toLowerCase().includes("false") || classification.toLowerCase().includes("unverifiable");
 
         // Update UI
         const trustInfo = getTrustBadge(confidence, isFake);
@@ -147,9 +149,10 @@ document.getElementById('newsForm').addEventListener('submit', async function (e
         resultDiv.className = 'result ' + (isFake ? 'fake' : 'real');
         resultText.textContent = isFake ? `⚠️ ${classification}` : `✅ ${classification}`;
         confidenceDiv.textContent = `Confidence: ${confidence}%`;
-        trustBadgeDiv.textContent = trustInfo.badge;
+        trustBadgeDiv.textContent = trustInfo.badge + ' (Click for details)';
         trustBadgeDiv.style.backgroundColor = trustInfo.color;
         trustBadgeDiv.style.color = 'white';
+        trustBadgeDiv.style.cursor = 'pointer';
 
         // Store data for modal and make trust badge clickable
         trustBadgeDiv.style.cursor = 'pointer';
