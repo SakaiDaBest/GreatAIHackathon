@@ -90,27 +90,27 @@ document.getElementById('newsForm').addEventListener('submit', async function (e
         });
 
         const data = await response.json();
-        console.log("Raw API response:", data);
 
-        // ✅ Parse the inner body JSON
-        const parsedBody = data.body ? JSON.parse(data.body) : {};
-        const aiText = parsedBody.text || "No response received";
+        if (response.status !== 200) {
+            throw new Error(data.body || "Unexpected API error");
+        }
 
-        console.log("AI returned text:", aiText);
+        const aiText = data.body; // ✅ Now this is a plain string from Lambda
 
-        // Parse classification and confidence
-        let classificationMatch = aiText.match(/Classification:\s*["“”']?([^"\n]+)/i);
-        let confidenceMatch = aiText.match(/Confidence(?: Percentage)?:\s*(\d+)%/i);
+        // Parse AI response to extract confidence and classification
+        let classificationMatch = aiText.match(/Classification:\s*["“]?(.+?)["”]?(\n|$)/i);
+        let confidenceMatch = aiText.match(/Confidence Percentage:\s*(\d+)%/i);
 
         const classification = classificationMatch ? classificationMatch[1] : "Uncertain";
         const confidence = confidenceMatch ? parseInt(confidenceMatch[1]) : 50;
+
         const isFake = classification.toLowerCase().includes("false");
 
         // Update UI
         const trustInfo = getTrustBadge(confidence, isFake);
 
         resultDiv.className = 'result ' + (isFake ? 'fake' : 'real');
-        resultText.innerHTML = aiText.replace(/\n/g, "<br>"); // preserve line breaks
+        resultText.textContent = isFake ? `⚠️ ${classification}` : `✅ ${classification}`;
         confidenceDiv.textContent = `Confidence: ${confidence}%`;
         trustBadgeDiv.textContent = trustInfo.badge;
         trustBadgeDiv.style.backgroundColor = trustInfo.color;
