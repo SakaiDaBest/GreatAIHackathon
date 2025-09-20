@@ -1,4 +1,4 @@
-const API_ENDPOINT = "https://gj2322u.execute-api.ap-southeast-2.amazonaws.com/"; // Replace with your API Gateway Invoke URL
+const API_ENDPOINT = "https://bvrzv4lsg9.execute-api.ap-southeast-2.amazonaws.com/main";
 
 // Theme toggle functionality
 function toggleTheme() {
