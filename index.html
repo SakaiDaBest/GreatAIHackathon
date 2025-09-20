@@ -244,44 +244,105 @@
             margin-top: 1rem;
         }
 
-        /* Reasoning box styles */
-        .reasoning-box {
-            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
-            border: 1px solid #dee2e6;
-            border-radius: 12px;
-            padding: 20px;
-            margin-top: 20px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.2);
+            width: 90%;
+            max-width: 500px;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
             transition: all 0.3s ease;
-            animation: slideInUp 0.4s ease-out;
         }
 
-        .reasoning-box h3 {
-            color: #495057;
-            margin: 0 0 15px 0;
-            font-size: 1.1em;
-            font-weight: 600;
+        .modal-close:hover {
+            background: #f0f0f0;
+            color: #333;
         }
 
-        .reasoning-box p {
-            color: #6c757d;
-            line-height: 1.6;
-            margin: 0;
-            font-size: 0.95em;
-            white-space: pre-wrap;
-            text-align: left;
-            font-weight: normal;
+        .analysis-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
-        @keyframes slideInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        .analysis-section {
+            margin-bottom: 1rem;
+        }
+
+        .analysis-section h4 {
+            font-size: 14px;
+            color: #555;
+            margin-bottom: 0.5rem;
+        }
+
+        .keyword-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .keyword-tag {
+            background: #e3f2fd;
+            color: #1976d2;
+            padding: 0.2rem 0.5rem;
+            border-radius: 12px;
+            font-size: 12px;
+        }
+
+        .keyword-tag.fake {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        .keyword-tag.real {
+            background: #e8f5e8;
+            color: #2e7d32;
+        }
+
+        .analysis-score {
+            font-size: 13px;
+            color: #666;
+            font-style: italic;
         }
 
         .theme-toggle {
@@ -332,18 +393,29 @@
             color: #fff;
         }
 
-        /* Dark theme styles for reasoning box */
-        body.dark .reasoning-box {
-            background: linear-gradient(135deg, #2d3748, #1a202c);
-            border-color: #4a5568;
+        body.dark .modal-content {
+            background: rgba(30, 30, 50, 0.95);
         }
 
-        body.dark .reasoning-box h3 {
-            color: #e2e8f0;
+        body.dark .modal-close {
+            color: #ccc;
         }
 
-        body.dark .reasoning-box p {
-            color: #a0aec0;
+        body.dark .modal-close:hover {
+            background: #444;
+            color: #fff;
+        }
+
+        body.dark .analysis-title {
+            color: #fff;
+        }
+
+        body.dark .analysis-section h4 {
+            color: #ccc;
+        }
+
+        body.dark .analysis-score {
+            color: #aaa;
         }
 
         .footer {
@@ -353,11 +425,6 @@
             border-top: 1px solid #eee;
             color: #888;
             font-size: 0.85rem;
-        }
-
-        body.dark .footer {
-            border-top-color: #444;
-            color: #bbb;
         }
 
         .stats {
@@ -384,10 +451,6 @@
             font-size: 0.8rem;
             color: #666;
             margin-top: 0.2rem;
-        }
-
-        body.dark .stat-label {
-            color: #bbb;
         }
     </style>
 </head>
@@ -443,14 +506,30 @@
             <div id="trustBadge" class="trust-badge"></div>
         </div>
 
-        <!-- Moved reasoning box inside container -->
-        <div id="reasoning" class="reasoning-box" style="display: none;">
-            <h3>📝 Analysis Details</h3>
-            <p id="reasoningContent"></p>
-        </div>
-
         <div class="footer">
             <p>Powered by advanced text analysis • Always verify with multiple sources</p>
+        </div>
+    </div>
+
+    <div id="analysisModal" class="modal-overlay" onclick="closeModal(event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <button class="modal-close" onclick="closeModal()">×</button>
+            <div class="analysis-title">
+                🤖 AI Analysis Breakdown
+            </div>
+            <div class="analysis-section">
+                <h4>Probability Breakdown:</h4>
+                <div id="percentageDisplay" class="analysis-score"></div>
+            </div>
+            <div class="analysis-section">
+                <h4>Keywords Found:</h4>
+                <div id="keywordsList" class="keyword-list"></div>
+                <div id="keywordScore" class="analysis-score"></div>
+            </div>
+            <div class="analysis-section">
+                <h4>Analysis Summary:</h4>
+                <div id="analysisSummary" class="analysis-score"></div>
+            </div>
         </div>
     </div>
 
