@@ -1,0 +1,419 @@
+.aivengers-popup {
+  position: fixed !important;
+  width: 380px !important;
+  max-height: 600px !important;
+  background: white !important;
+  border: 2px solid #3b82f6 !important;
+  border-radius: 16px !important;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 20px rgba(59, 130, 246, 0.3) !important;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+  font-size: 14px !important;
+  line-height: 1.5 !important;
+  color: #111827 !important;
+  z-index: 2147483647 !important;
+  overflow: hidden !important;
+  animation: aivengers-assemble 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) !important;
+}
+
+@keyframes aivengers-assemble {
+  0% {
+    transform: scale(0.3) rotate(-10deg);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.05) rotate(2deg);
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
+}
+
+.aivengers-header {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  padding: 16px 20px !important;
+  background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 50%, #60a5fa 100%) !important;
+  color: white !important;
+  position: relative !important;
+}
+
+.aivengers-header::before {
+  content: '' !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="white" opacity="0.1"/><circle cx="80" cy="40" r="1" fill="white" opacity="0.1"/><circle cx="40" cy="80" r="1.5" fill="white" opacity="0.1"/></svg>') !important;
+}
+
+.aivengers-logo {
+  display: flex !important;
+  align-items: center !important;
+  z-index: 1 !important;
+}
+
+.aivengers-icon {
+  font-size: 22px !important;
+  margin-right: 8px !important;
+  filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3)) !important;
+}
+
+.aivengers-title {
+  font-size: 18px !important;
+  font-weight: 700 !important;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.3) !important;
+}
+
+.aivengers-close {
+  background: rgba(255,255,255,0.2) !important;
+  border: 1px solid rgba(255,255,255,0.3) !important;
+  color: white !important;
+  width: 32px !important;
+  height: 32px !important;
+  border-radius: 8px !important;
+  cursor: pointer !important;
+  font-size: 16px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: all 0.2s !important;
+  z-index: 1 !important;
+}
+
+.aivengers-close:hover {
+  background: rgba(255,255,255,0.3) !important;
+  transform: scale(1.1) !important;
+}
+
+.aivengers-content {
+  padding: 20px !important;
+  max-height: 500px !important;
+  overflow-y: auto !important;
+}
+
+.aivengers-loading {
+  text-align: center !important;
+  padding: 30px 0 !important;
+}
+
+.aivengers-spinner {
+  width: 40px !important;
+  height: 40px !important;
+  border: 4px solid #e5e7eb !important;
+  border-top: 4px solid #3b82f6 !important;
+  border-radius: 50% !important;
+  animation: aivengers-spin 1s linear infinite !important;
+  margin: 0 auto 20px !important;
+}
+
+@keyframes aivengers-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.aivengers-loading-text {
+  color: #6b7280 !important;
+  font-size: 12px !important;
+  margin: 4px 0 !important;
+  opacity: 0.8 !important;
+}
+
+.aivengers-mission-status {
+  margin-bottom: 20px !important;
+  text-align: center !important;
+}
+
+.aivengers-status-badge {
+  display: inline-flex !important;
+  align-items: center !important;
+  padding: 10px 20px !important;
+  border-radius: 25px !important;
+  color: white !important;
+  font-weight: 700 !important;
+  margin-bottom: 12px !important;
+  font-size: 14px !important;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1) !important;
+}
+
+.aivengers-status-icon {
+  margin-right: 8px !important;
+  font-size: 16px !important;
+}
+
+.aivengers-hero-quote {
+  font-style: italic !important;
+  font-size: 12px !important;
+  color: #6b7280 !important;
+  text-align: center !important;
+}
+
+.aivengers-analysis-grid {
+  margin-bottom: 20px !important;
+}
+
+.aivengers-metric {
+  background: #f8fafc !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 12px !important;
+  padding: 16px !important;
+  margin-bottom: 12px !important;
+}
+
+.aivengers-metric-header {
+  display: flex !important;
+  align-items: center !important;
+  margin-bottom: 8px !important;
+}
+
+.aivengers-metric-icon {
+  font-size: 16px !important;
+  margin-right: 8px !important;
+}
+
+.aivengers-metric-label {
+  font-weight: 600 !important;
+  color: #374151 !important;
+  font-size: 13px !important;
+  flex: 1 !important;
+}
+
+.aivengers-metric-value {
+  font-weight: 700 !important;
+  color: #111827 !important;
+  font-size: 16px !important;
+}
+
+.aivengers-metric-bar {
+  width: 100% !important;
+  height: 8px !important;
+  background: #e5e7eb !important;
+  border-radius: 4px !important;
+  overflow: hidden !important;
+  margin-bottom: 8px !important;
+}
+
+.aivengers-metric-fill {
+  height: 100% !important;
+  transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  border-radius: 4px !important;
+  position: relative !important;
+}
+
+.aivengers-metric-fill::after {
+  content: '' !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent) !important;
+  animation: aivengers-shimmer 2s infinite !important;
+}
+
+@keyframes aivengers-shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.aivengers-health-alert {
+  background: linear-gradient(135deg, #fef2f2, #fee2e2) !important;
+  border: 2px solid #fca5a5 !important;
+  border-radius: 12px !important;
+  padding: 16px !important;
+  margin-bottom: 16px !important;
+  box-shadow: 0 4px 6px rgba(220, 38, 38, 0.1) !important;
+}
+
+.aivengers-alert-header {
+  display: flex !important;
+  align-items: center !important;
+  margin-bottom: 8px !important;
+}
+
+.aivengers-alert-icon {
+  font-size: 18px !important;
+  margin-right: 8px !important;
+}
+
+.aivengers-alert-title {
+  font-weight: 700 !important;
+  color: #dc2626 !important;
+  font-size: 14px !important;
+}
+
+.aivengers-alert-subtitle {
+  font-size: 12px !important;
+  color: #7f1d1d !important;
+  margin-bottom: 8px !important;
+  font-style: italic !important;
+}
+
+.aivengers-alert-item {
+  color: #7f1d1d !important;
+  font-size: 12px !important;
+  margin-bottom: 4px !important;
+  font-weight: 500 !important;
+}
+
+.aivengers-mission-brief {
+  background: linear-gradient(135deg, #eff6ff, #dbeafe) !important;
+  border: 1px solid #93c5fd !important;
+  border-radius: 12px !important;
+  padding: 16px !important;
+  margin-bottom: 20px !important;
+}
+
+.aivengers-brief-header {
+  display: flex !important;
+  align-items: center !important;
+  margin-bottom: 8px !important;
+}
+
+.aivengers-brief-icon {
+  font-size: 16px !important;
+  margin-right: 8px !important;
+}
+
+.aivengers-brief-title {
+  font-weight: 600 !important;
+  color: #1e40af !important;
+  font-size: 13px !important;
+}
+
+.aivengers-brief-text {
+  color: #1e3a8a !important;
+  font-size: 12px !important;
+  line-height: 1.4 !important;
+}
+
+.aivengers-action-center {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr 1fr !important;
+  gap: 8px !important;
+  margin-bottom: 20px !important;
+}
+
+.aivengers-btn {
+  padding: 10px 12px !important;
+  border-radius: 8px !important;
+  border: none !important;
+  cursor: pointer !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  text-align: center !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+
+.aivengers-btn::before {
+  content: '' !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: -100% !important;
+  width: 100% !important;
+  height: 100% !important;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent) !important;
+  transition: left 0.5s !important;
+}
+
+.aivengers-btn:hover::before {
+  left: 100% !important;
+}
+
+.aivengers-btn-primary {
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8) !important;
+  color: white !important;
+  box-shadow: 0 4px 8px rgba(59, 130, 246, 0.3) !important;
+}
+
+.aivengers-btn-primary:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 8px 16px rgba(59, 130, 246, 0.4) !important;
+}
+
+.aivengers-btn-hero {
+  background: linear-gradient(135deg, #10b981, #059669) !important;
+  color: white !important;
+  box-shadow: 0 4px 8px rgba(16, 185, 129, 0.3) !important;
+}
+
+.aivengers-btn-hero:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 8px 16px rgba(16, 185, 129, 0.4) !important;
+}
+
+.aivengers-footer {
+  text-align: center !important;
+  padding-top: 16px !important;
+  border-top: 2px solid #e5e7eb !important;
+  background: linear-gradient(135deg, #f8fafc, #f1f5f9) !important;
+  margin: -20px -20px 0 -20px !important;
+  padding: 16px 20px 12px !important;
+}
+
+.aivengers-footer-motto {
+  color: #1e40af !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  margin-bottom: 4px !important;
+}
+
+.aivengers-footer-stats {
+  color: #64748b !important;
+  font-size: 10px !important;
+}
+
+.aivengers-notification {
+  animation: aivengers-notification-slide 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) !important;
+  backdrop-filter: blur(10px) !important;
+}
+
+@keyframes aivengers-notification-slide {
+  from {
+    transform: translateX(100%) rotate(10deg);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0) rotate(0deg);
+    opacity: 1;
+  }
+}
+
+/* Scrollbar styling for AIvengers popup */
+.aivengers-content::-webkit-scrollbar {
+  width: 6px !important;
+}
+
+.aivengers-content::-webkit-scrollbar-track {
+  background: #f1f5f9 !important;
+  border-radius: 3px !important;
+}
+
+.aivengers-content::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #3b82f6, #60a5fa) !important;
+  border-radius: 3px !important;
+}
+
+.aivengers-content::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #1d4ed8, #3b82f6) !important;
+}
+
+/* Special effects for high-risk content */
+.aivengers-popup[data-risk="HIGH"] {
+  animation: aivengers-danger-pulse 2s infinite !important;
+}
+
+@keyframes aivengers-danger-pulse {
+  0%, 100% {
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 20px rgba(59, 130, 246, 0.3);
+  }
+  50% {
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 30px rgba(220, 38, 38, 0.5);
+  }
+}
+
+
