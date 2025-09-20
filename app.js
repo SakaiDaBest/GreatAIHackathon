@@ -151,20 +151,27 @@ document.getElementById('newsForm').addEventListener('submit', async function (e
         trustBadgeDiv.style.backgroundColor = trustInfo.color;
         trustBadgeDiv.style.color = 'white';
 
-        // Update reasoning box
-        const reasoningDiv = document.getElementById('reasoning');
-        const reasoningContent = document.getElementById('reasoningContent');
+        // Store data for modal and make trust badge clickable
+        trustBadgeDiv.style.cursor = 'pointer';
+        trustBadgeDiv.onclick = () => openModal(confidence, reasoning, classification);
 
-        if (reasoningDiv && reasoningContent) {
+        // Update modal data
+        const percentageDisplay = document.getElementById('percentageDisplay');
+        const analysisSummary = document.getElementById('analysisSummary');
+
+        if (percentageDisplay) {
+            percentageDisplay.textContent = `${confidence}% confidence in classification: "${classification}"`;
+        }
+
+        if (analysisSummary) {
             // Clean up the reasoning text by removing extra markdown and formatting
             let cleanReasoning = reasoning
                 .replace(/\*\*/g, '') // Remove bold markdown
-                .replace(/\n\s*\n/g, '\n') // Remove extra line breaks
+                .replace(/\n\s*\n/g, '\n\n') // Normalize line breaks
                 .replace(/^\s+/gm, '') // Remove leading spaces from lines
                 .trim();
 
-            reasoningContent.textContent = cleanReasoning;
-            reasoningDiv.style.display = 'block';
+            analysisSummary.textContent = cleanReasoning;
         }
 
     } catch (error) {
