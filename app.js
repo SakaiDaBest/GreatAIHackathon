@@ -92,15 +92,14 @@ document.getElementById('newsForm').addEventListener('submit', async function (e
         const data = await response.json();
         console.log("Raw API response:", data);
 
-        // Parse body safely
+        // ✅ Parse the inner body JSON
         const parsedBody = data.body ? JSON.parse(data.body) : {};
-        const firstKey = Object.keys(parsedBody)[0];
-        const aiText = firstKey ? parsedBody[firstKey] : "No response text received";
+        const aiText = parsedBody.text || "No response received";
 
         console.log("AI returned text:", aiText);
 
-        // Extract classification and confidence if present
-        let classificationMatch = aiText.match(/Classification:\s*(.*)/i);
+        // Parse classification and confidence
+        let classificationMatch = aiText.match(/Classification:\s*["“”']?([^"\n]+)/i);
         let confidenceMatch = aiText.match(/Confidence(?: Percentage)?:\s*(\d+)%/i);
 
         const classification = classificationMatch ? classificationMatch[1] : "Uncertain";
@@ -111,7 +110,7 @@ document.getElementById('newsForm').addEventListener('submit', async function (e
         const trustInfo = getTrustBadge(confidence, isFake);
 
         resultDiv.className = 'result ' + (isFake ? 'fake' : 'real');
-        resultText.textContent = aiText; // Show full AI output
+        resultText.innerHTML = aiText.replace(/\n/g, "<br>"); // preserve line breaks
         confidenceDiv.textContent = `Confidence: ${confidence}%`;
         trustBadgeDiv.textContent = trustInfo.badge;
         trustBadgeDiv.style.backgroundColor = trustInfo.color;
