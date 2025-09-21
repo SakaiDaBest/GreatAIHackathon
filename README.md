@@ -41,12 +41,13 @@ User (Browser)
                    └── Returns JSON response to frontend
 
 ## 📂 Project Structure
+│
 ├── WebExtension  
 │     ├── icons                # Contians images used 
 │     ├── background.js               
 │     ├── manifest.js     
 │     ├── popup.html  
-│     ├── popup.js
+│     └── popup.js
 │         
 ├── Website  
 │     ├── index.html           # Main webpage UI
@@ -86,5 +87,5 @@ Input language automatically detected
 Output reasoning returned in the same language
 Supported Languages: EN, ZH, JA, KO, FR, ES, DE, PT (Amazon Translate auto-detection)
 
-##👥 **Team**
+## 👥 Team
 Built during the Great AI Hackathon event by Team AIvenger ⚡
