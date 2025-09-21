@@ -1,0 +1,143 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Serverless fact-checking system with Bedrock + Translate + API Gateway + CloudFront
+
+Globals:
+  Function:
+    Timeout: 15
+    MemorySize: 256
+    Runtime: python3.12
+
+Parameters:
+  DeploymentBucketName:
+    Type: String
+    Default: my-factcheck-frontend
+    Description: S3 bucket for hosting frontend
+
+Resources:
+
+  FactCheckLambda:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: factcheck-analyze
+      Handler: lambda_function.lambda_handler
+      CodeUri: ./lambda
+      Environment:
+        Variables:
+          AWS_REGION: ap-southeast-2
+          TAVILY_API_KEY: !Ref TavilyApiKey
+          KNOWLEDGE_BASE_ID: OFLYCZAWWQ
+      Policies:
+        - Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Action:
+                - bedrock:InvokeModel
+              Resource:
+                - arn:aws:bedrock:ap-southeast-2:*:model/apac.anthropic.claude-3-7-sonnet-20250219-v1:0
+                - arn:aws:bedrock:ap-southeast-2:*:model/apac.anthropic.claude-3-5-sonnet-20241022-v2:0
+                - arn:aws:bedrock:ap-southeast-2:*:model/apac.anthropic.claude-3-haiku-20240307-v1:0
+            - Effect: Allow
+              Action: bedrock-agent-runtime:Retrieve
+              Resource: "*"
+            - Effect: Allow
+              Action:
+                - translate:TranslateText
+              Resource: "*"
+            - Effect: Allow
+              Action:
+                - comprehend:DetectDominantLanguage
+              Resource: "*"
+            - Effect: Allow
+              Action:
+                - logs:CreateLogGroup
+                - logs:CreateLogStream
+                - logs:PutLogEvents
+              Resource: "*"
+
+  ApiGateway:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: FactCheckAPI
+      StageName: prod
+      Cors:
+        AllowMethods: "'OPTIONS,POST'"
+        AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+        AllowOrigin: "'*'"
+      DefinitionBody:
+        swagger: "2.0"
+        info:
+          title: FactCheckAPI
+          version: "1.0"
+        paths:
+          /analyze:
+            options:
+              summary: "CORS support"
+              responses:
+                "200":
+                  description: "Default response for CORS method"
+              x-amazon-apigateway-integration:
+                type: mock
+                requestTemplates:
+                  application/json: '{"statusCode": 200}'
+                responses:
+                  default:
+                    statusCode: "200"
+            post:
+              summary: "Analyze claim"
+              consumes:
+                - application/json
+              produces:
+                - application/json
+              responses: {}
+              x-amazon-apigateway-integration:
+                uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${FactCheckLambda.Arn}/invocations
+                httpMethod: POST
+                type: aws_proxy
+
+  LambdaPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref FactCheckLambda
+      Principal: apigateway.amazonaws.com
+
+  FrontendBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Ref DeploymentBucketName
+      WebsiteConfiguration:
+        IndexDocument: index.html
+        ErrorDocument: index.html
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: false
+        BlockPublicPolicy: false
+        IgnorePublicAcls: false
+        RestrictPublicBuckets: false
+
+  CloudFrontDistribution:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Enabled: true
+        DefaultRootObject: index.html
+        Origins:
+          - DomainName: !GetAtt FrontendBucket.RegionalDomainName
+            Id: S3Origin
+            S3OriginConfig: {}
+        DefaultCacheBehavior:
+          TargetOriginId: S3Origin
+          ViewerProtocolPolicy: redirect-to-https
+          AllowedMethods: [GET, HEAD, OPTIONS]
+          CachedMethods: [GET, HEAD, OPTIONS]
+          ForwardedValues:
+            QueryString: false
+
+Outputs:
+  ApiUrl:
+    Description: "API Gateway endpoint URL"
+    Value: !Sub "https://${ApiGateway}.execute-api.${AWS::Region}.amazonaws.com/prod/analyze"
+
+  CloudFrontDomain:
+    Description: "CloudFront domain for frontend"
+    Value: !GetAtt CloudFrontDistribution.DomainName
