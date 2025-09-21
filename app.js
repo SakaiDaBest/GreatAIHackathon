@@ -1,8 +1,6 @@
 // Original API endpoint
 const ORIGINAL_API_ENDPOINT = "https://btg76jdj06.execute-api.ap-southeast-2.amazonaws.com/works";
 
-// CORS Proxy options (try in order):
-
 // Use your original endpoint now that CORS is fixed in Lambda
 const API_ENDPOINT = ORIGINAL_API_ENDPOINT;
 
@@ -58,6 +56,44 @@ function getTrustBadge(confidence, isFake) {
     }
 
     return { badge, color };
+}
+
+// Modal functions - THESE WERE MISSING!
+function openModal(confidence, reasoning, classification) {
+    const modal = document.getElementById('analysisModal');
+    const percentageDisplay = document.getElementById('percentageDisplay');
+    const analysisSummary = document.getElementById('analysisSummary');
+
+    console.log('Opening modal with:', { confidence, classification });
+
+    // Update modal content
+    if (percentageDisplay) {
+        percentageDisplay.textContent = `${confidence}% confidence in classification: "${classification}"`;
+    }
+
+    if (analysisSummary) {
+        // Clean up the reasoning text by removing extra markdown and formatting
+        let cleanReasoning = reasoning
+            .replace(/\*\*/g, '') // Remove bold markdown
+            .replace(/\n\s*\n/g, '\n\n') // Normalize line breaks
+            .replace(/^\s+/gm, '') // Remove leading spaces from lines
+            .replace(/\d+\.\s+/g, '• ') // Convert numbered lists to bullet points
+            .trim();
+
+        analysisSummary.textContent = cleanReasoning || "No detailed analysis available.";
+    }
+
+    // Show the modal
+    if (modal) {
+        modal.style.display = 'flex';
+    }
+}
+
+function closeModal(event) {
+    const modal = document.getElementById('analysisModal');
+    if (!event || event.target === modal || event.target.classList.contains('modal-close')) {
+        modal.style.display = 'none';
+    }
 }
 
 // Restore theme
@@ -155,27 +191,7 @@ document.getElementById('newsForm').addEventListener('submit', async function (e
         trustBadgeDiv.style.cursor = 'pointer';
 
         // Store data for modal and make trust badge clickable
-        trustBadgeDiv.style.cursor = 'pointer';
         trustBadgeDiv.onclick = () => openModal(confidence, reasoning, classification);
-
-        // Update modal data
-        const percentageDisplay = document.getElementById('percentageDisplay');
-        const analysisSummary = document.getElementById('analysisSummary');
-
-        if (percentageDisplay) {
-            percentageDisplay.textContent = `${confidence}% confidence in classification: "${classification}"`;
-        }
-
-        if (analysisSummary) {
-            // Clean up the reasoning text by removing extra markdown and formatting
-            let cleanReasoning = reasoning
-                .replace(/\*\*/g, '') // Remove bold markdown
-                .replace(/\n\s*\n/g, '\n\n') // Normalize line breaks
-                .replace(/^\s+/gm, '') // Remove leading spaces from lines
-                .trim();
-
-            analysisSummary.textContent = cleanReasoning;
-        }
 
     } catch (error) {
         console.error("Detailed error:", error);
@@ -184,12 +200,8 @@ document.getElementById('newsForm').addEventListener('submit', async function (e
         confidenceDiv.textContent = '';
         trustBadgeDiv.textContent = '';
         trustBadgeDiv.style.backgroundColor = '';
-
-        // Hide reasoning box on error
-        const reasoningDiv = document.getElementById('reasoning');
-        if (reasoningDiv) {
-            reasoningDiv.style.display = 'none';
-        }
+        trustBadgeDiv.style.cursor = 'default';
+        trustBadgeDiv.onclick = null;
     } finally {
         loadingDiv.style.display = 'none';
         submitBtn.disabled = false;
