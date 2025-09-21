@@ -1,4 +1,3 @@
- 
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,7 +11,7 @@
             padding: 0;
             box-sizing: border-box;
         }
- 
+
         body {
             font-family: Arial, sans-serif;
             background: #0a0e27;
@@ -23,7 +22,7 @@
             position: relative;
             overflow: hidden;
         }
- 
+
         body::before {
             content: '01001110 01100101 01110111 01110011 00100000 01000100 01100101 01110100 01100101 01100011 01110100 01101111 01110010 00001010 01000001 01001001 00100000 01000001 01101110 01100001 01101100 01111001 01110011 01101001 01110011 00001010 01000110 01100001 01101011 01100101 00100000 01001110 01100101 01110111 01110011 00001010 01010010 01100101 01100001 01101100 00100000 01001110 01100101 01110111 01110011';
             position: fixed;
@@ -40,7 +39,7 @@
             pointer-events: none;
             z-index: 0;
         }
- 
+
         body::after {
             content: '';
             position: fixed;
@@ -55,12 +54,12 @@
             pointer-events: none;
             z-index: 1;
         }
- 
+
         @keyframes scroll {
             0% { transform: translateY(100vh); }
             100% { transform: translateY(-100vh); }
         }
- 
+
         .tech-elements {
             position: fixed;
             top: 0;
@@ -70,19 +69,19 @@
             pointer-events: none;
             z-index: 1;
         }
- 
+
         .tech-icon {
             position: absolute;
             color: rgba(102, 126, 234, 0.15);
             font-size: 24px;
             animation: techFloat 8s ease-in-out infinite;
         }
- 
+
         @keyframes techFloat {
             0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0.15; }
             50% { transform: translateY(-30px) rotate(180deg); opacity: 0.05; }
         }
- 
+
         .container {
             background: rgba(255,255,255,0.95);
             backdrop-filter: blur(10px);
@@ -95,15 +94,16 @@
             z-index: 2;
             border: 1px solid rgba(255,255,255,0.2);
         }
- 
+
         h1 {
             text-align: center;
-            color: #333;
+            color: #222;
             margin-bottom: 2rem;
-            font-size: 2rem;
+            font-size: 2.4rem;
             text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            font-weight: 700;
         }
- 
+
         .subtitle {
             text-align: center;
             color: #666;
@@ -111,18 +111,18 @@
             font-size: 0.95rem;
             font-style: italic;
         }
- 
+
         .input-group {
-            margin-bottom: 1rem;
+            margin-bottom: 2rem;
         }
- 
+
         label {
             display: block;
             margin-bottom: 0.5rem;
             font-weight: bold;
             color: #555;
         }
- 
+
         textarea {
             width: 100%;
             padding: 1rem;
@@ -134,14 +134,19 @@
             transition: all 0.3s ease;
             font-family: inherit;
         }
- 
+
+        textarea:hover {
+            background: #f9f9f9;
+        }
+
         textarea:focus {
             outline: none;
             border-color: #667eea;
             box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
             transform: translateY(-1px);
+            background: #fff;
         }
- 
+
         .btn {
             background: linear-gradient(45deg, #667eea, #764ba2);
             color: white;
@@ -157,7 +162,7 @@
             position: relative;
             overflow: hidden;
         }
- 
+
         .btn::before {
             content: '';
             position: absolute;
@@ -168,25 +173,25 @@
             background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
             transition: left 0.5s;
         }
- 
+
         .btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
         }
- 
+
         .btn:hover::before {
             left: 100%;
         }
- 
+
         .btn:active {
             transform: translateY(0);
         }
- 
+
         .loading {
             display: none;
             margin-top: 1rem;
         }
- 
+
         .progress-container {
             width: 100%;
             background: #f0f0f0;
@@ -194,48 +199,81 @@
             overflow: hidden;
             margin-bottom: 1rem;
         }
- 
+
         .progress-bar {
             height: 8px;
             background: linear-gradient(45deg, #667eea, #764ba2);
             width: 0%;
             transition: width 0.3s ease;
         }
- 
+
         .progress-text {
             text-align: center;
             color: #667eea;
             font-size: 14px;
             margin-top: 0.5rem;
         }
- 
+
+        .progress-text::after {
+            content: '';
+            animation: dots 1.5s infinite;
+        }
+
+        @keyframes dots {
+            0%, 20% { content: ''; }
+            40% { content: '.'; }
+            60% { content: '..'; }
+            80%, 100% { content: '...'; }
+        }
+
         .result {
             margin-top: 1.5rem;
-            padding: 1rem;
-            border-radius: 5px;
+            padding: 1.5rem;
+            border-radius: 12px;
             text-align: center;
             font-weight: bold;
             display: none;
+            position: relative;
+            padding-left: 3rem;
         }
- 
+
+        .result::before {
+            content: '';
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+        }
+
+        .result.fake::before {
+            content: '🔴';
+        }
+
+        .result.real::before {
+            content: '🟢';
+        }
+
         .fake {
             background: #ffebee;
             color: #c62828;
             border: 2px solid #ef5350;
         }
- 
+
         .real {
             background: #e8f5e8;
             color: #2e7d32;
             border: 2px solid #66bb6a;
         }
- 
+
         .confidence {
             margin-top: 0.5rem;
             font-size: 14px;
             opacity: 0.8;
         }
- 
+
         .trust-badge {
             display: inline-block;
             padding: 0.5rem 1rem;
@@ -243,8 +281,17 @@
             font-size: 14px;
             font-weight: bold;
             margin-top: 1rem;
+            transition: all 0.3s ease;
         }
- 
+
+        .trust-badge:hover {
+            transform: scale(1.05);
+        }
+
+        .trust-high { background: #2ed573; color: white; }
+        .trust-medium { background: #ffa502; color: white; }
+        .trust-low { background: #ff4757; color: white; }
+
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -255,9 +302,9 @@
             display: none;
             justify-content: center;
             align-items: center;
-            z-index: 1000;
+            z-index: 9999;
         }
- 
+
         .modal-content {
             background: rgba(255,255,255,0.95);
             backdrop-filter: blur(10px);
@@ -266,12 +313,12 @@
             box-shadow: 0 20px 40px rgba(0,0,0,0.3);
             border: 1px solid rgba(255,255,255,0.2);
             width: 90%;
-            max-width: 500px;
+            max-width: 600px;
             max-height: 80vh;
             overflow-y: auto;
             position: relative;
         }
- 
+
         .modal-close {
             position: absolute;
             top: 1rem;
@@ -289,14 +336,14 @@
             border-radius: 50%;
             transition: all 0.3s ease;
         }
- 
+
         .modal-close:hover {
             background: #f0f0f0;
             color: #333;
         }
- 
+
         .analysis-title {
-            font-size: 16px;
+            font-size: 18px;
             font-weight: bold;
             color: #333;
             margin-bottom: 1rem;
@@ -304,48 +351,25 @@
             align-items: center;
             gap: 0.5rem;
         }
- 
+
         .analysis-section {
-            margin-bottom: 1rem;
+            margin-bottom: 1.5rem;
         }
- 
+
         .analysis-section h4 {
-            font-size: 14px;
+            font-size: 16px;
             color: #555;
             margin-bottom: 0.5rem;
+            font-weight: 600;
         }
- 
-        .keyword-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-            margin-bottom: 0.5rem;
-        }
- 
-        .keyword-tag {
-            background: #e3f2fd;
-            color: #1976d2;
-            padding: 0.2rem 0.5rem;
-            border-radius: 12px;
-            font-size: 12px;
-        }
- 
-        .keyword-tag.fake {
-            background: #ffebee;
-            color: #c62828;
-        }
- 
-        .keyword-tag.real {
-            background: #e8f5e8;
-            color: #2e7d32;
-        }
- 
+
         .analysis-score {
-            font-size: 13px;
+            font-size: 14px;
             color: #666;
-            font-style: italic;
+            line-height: 1.6;
+            white-space: pre-wrap;
         }
- 
+
         .theme-toggle {
             position: fixed;
             top: 20px;
@@ -360,74 +384,87 @@
             z-index: 1000;
             transition: all 0.3s ease;
         }
- 
+
         .theme-toggle:hover {
             transform: scale(1.1);
         }
- 
-        /* Dark mode styles */
-        body.dark {
-            background: #1a1a2e;
+
+        .history-btn {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            background: rgba(255,255,255,0.9);
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            cursor: pointer;
+            font-size: 20px;
+            z-index: 1000;
+            transition: all 0.3s ease;
         }
- 
-        body.dark .container {
-            background: rgba(30, 30, 50, 0.95);
-            color: #fff;
+
+        .history-btn:hover {
+            transform: scale(1.1);
         }
- 
-        body.dark h1, body.dark .subtitle, body.dark label {
-            color: #fff;
+
+        .history-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
         }
- 
-        body.dark textarea {
-            background: #2a2a3e;
-            color: #fff;
-            border-color: #444;
+
+        .history-content {
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.2);
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
         }
- 
-        body.dark .stats {
-            background: rgba(102, 126, 234, 0.1);
+
+        .history-item {
+            padding: 1rem;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 1rem;
+            border-radius: 8px;
+            transition: background 0.3s ease;
         }
- 
-        body.dark .theme-toggle {
-            background: rgba(30, 30, 50, 0.9);
-            color: #fff;
+
+        .history-item:hover {
+            background: rgba(102, 126, 234, 0.05);
         }
- 
-        body.dark .modal-content {
-            background: rgba(30, 30, 50, 0.95);
+
+        .history-text {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 0.5rem;
+            line-height: 1.4;
         }
- 
-        body.dark .modal-close {
-            color: #ccc;
+
+        .history-result {
+            font-weight: bold;
+            font-size: 16px;
+            margin-bottom: 0.3rem;
         }
- 
-        body.dark .modal-close:hover {
-            background: #444;
-            color: #fff;
+
+        .history-date {
+            font-size: 12px;
+            color: #999;
         }
- 
-        body.dark .analysis-title {
-            color: #fff;
-        }
- 
-        body.dark .analysis-section h4 {
-            color: #ccc;
-        }
- 
-        body.dark .analysis-score {
-            color: #aaa;
-        }
- 
-        .footer {
-            text-align: center;
-            margin-top: 2rem;
-            padding-top: 1.5rem;
-            border-top: 1px solid #eee;
-            color: #888;
-            font-size: 0.85rem;
-        }
- 
+
         .stats {
             display: flex;
             justify-content: space-around;
@@ -437,21 +474,150 @@
             border-radius: 8px;
             border: 1px solid rgba(102, 126, 234, 0.1);
         }
- 
+
         .stat-item {
             text-align: center;
         }
- 
+
         .stat-number {
             font-size: 1.2rem;
             font-weight: bold;
             color: #667eea;
         }
- 
+
         .stat-label {
             font-size: 0.8rem;
             color: #666;
             margin-top: 0.2rem;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #eee;
+            color: #888;
+            font-size: 0.85rem;
+        }
+
+        /* Dark mode styles */
+        body.dark {
+            background: #1a1a2e;
+        }
+
+        body.dark .container {
+            background: rgba(30, 30, 50, 0.95);
+            color: #fff;
+        }
+
+        body.dark h1, body.dark .subtitle, body.dark label {
+            color: #fff;
+        }
+
+        body.dark textarea {
+            background: #1e1e2e;
+            color: #e0e0e0;
+            border-color: #555;
+        }
+
+        body.dark textarea:hover {
+            background: #252535;
+        }
+
+        body.dark textarea:focus {
+            background: #1e1e2e;
+        }
+
+        body.dark h1 {
+            color: #f0f0f0;
+        }
+
+        body.dark .stats {
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        body.dark .stat-label {
+            color: #bbb;
+        }
+
+        body.dark .theme-toggle {
+            background: rgba(30, 30, 50, 0.9);
+            color: #fff;
+        }
+
+        body.dark .history-btn {
+            background: rgba(30, 30, 50, 0.9);
+            color: #fff;
+        }
+
+        body.dark .history-content,
+        body.dark .modal-content {
+            background: rgba(30, 30, 50, 0.95);
+            color: #fff;
+        }
+
+        body.dark .history-item {
+            border-bottom-color: #444;
+        }
+
+        body.dark .history-item:hover {
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        body.dark .history-text {
+            color: #ccc;
+        }
+
+        body.dark .history-result {
+            color: #fff;
+        }
+
+        body.dark .modal-close {
+            color: #ccc;
+        }
+
+        body.dark .modal-close:hover {
+            background: #444;
+            color: #fff;
+        }
+
+        body.dark .analysis-title {
+            color: #fff;
+        }
+
+        body.dark .analysis-section h4 {
+            color: #ccc;
+        }
+
+        body.dark .analysis-score {
+            color: #aaa;
+        }
+
+        body.dark .footer {
+            border-top-color: #444;
+            color: #bbb;
+        }
+
+        /* Mobile responsiveness */
+        @media (max-width: 768px) {
+            .container {
+                width: 95%;
+                padding: 1.5rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .theme-toggle, .history-btn {
+                width: 45px;
+                height: 45px;
+                font-size: 18px;
+            }
+
+            .history-btn {
+                top: 75px;
+            }
         }
     </style>
 </head>
@@ -466,33 +632,35 @@
         <div class="tech-icon" style="top: 85%; left: 55%; animation-delay: 6s;">📡</div>
         <div class="tech-icon" style="top: 55%; left: 35%; animation-delay: 7s;">💻</div>
     </div>
- 
+
     <div class="container">
         <h1>🔍 News Detector</h1>
-        <p class="subtitle">Analyze news articles and headlines for authenticity</p>
- 
+        <p class="subtitle">AI-powered analysis using Knowledge Base and live search</p>
+
         <button class="theme-toggle" onclick="toggleTheme()" title="Toggle Dark/Light Mode">🌙</button>
- 
+        <button class="history-btn" onclick="toggleHistory()" title="View Analysis History">📋</button>
+
         <div class="stats">
+            <div class="stat-item">
+                <div class="stat-number">KB</div>
+                <div class="stat-label">Enhanced</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">Live</div>
+                <div class="stat-label">Search</div>
+            </div>
             <div class="stat-item">
                 <div class="stat-number">AI</div>
                 <div class="stat-label">Powered</div>
             </div>
-            <div class="stat-item">
-                <div class="stat-number">Fast</div>
-                <div class="stat-label">Analysis</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-number">Reliable</div>
-                <div class="stat-label">Results</div>
-            </div>
         </div>
+
         <form id="newsForm">
             <div class="input-group">
                 <label for="newsText">Enter news article or headline:</label>
-                <textarea id="newsText" placeholder="Paste your news article or headline here..."></textarea>
+                <textarea id="newsText" placeholder="Paste article or headline here... (Ctrl+Enter to submit)" aria-label="Enter news text for analysis"></textarea>
             </div>
-            <button type="submit" class="btn">Analyze News</button>
+            <button type="submit" class="btn" aria-label="Analyze news for authenticity">Analyze News</button>
             <div class="loading" id="loading">
                 <div class="progress-container">
                     <div class="progress-bar" id="progressBar"></div>
@@ -500,18 +668,19 @@
                 <div class="progress-text" id="progressText">Initializing...</div>
             </div>
         </form>
- 
+
         <div id="result" class="result">
             <div id="resultText"></div>
             <div id="confidence" class="confidence"></div>
             <div id="trustBadge" class="trust-badge"></div>
         </div>
- 
+
         <div class="footer">
-            <p>Powered by advanced text analysis • Always verify with multiple sources</p>
+            <p>Powered by Knowledge Base + Live Search • Always verify with multiple sources</p>
         </div>
     </div>
-   
+
+    <!-- Analysis Details Modal -->
     <div id="analysisModal" class="modal-overlay" onclick="closeModal(event)">
         <div class="modal-content" onclick="event.stopPropagation()">
             <button class="modal-close" onclick="closeModal()">×</button>
@@ -519,18 +688,29 @@
                 🤖 AI Analysis Breakdown
             </div>
             <div class="analysis-section">
-                <h4>Probability Breakdown:</h4>
+                <h4>Probability Assessment:</h4>
                 <div id="percentageDisplay" class="analysis-score"></div>
             </div>
             <div class="analysis-section">
-                <h4>Analysis Summary:</h4>
+                <h4>Detailed Analysis:</h4>
                 <div id="analysisSummary" class="analysis-score"></div>
             </div>
         </div>
     </div>
- 
+
+    <!-- History Modal -->
+    <div id="historyModal" class="history-modal" onclick="closeHistory(event)">
+        <div class="history-content" onclick="event.stopPropagation()">
+            <button class="modal-close" onclick="closeHistory()">×</button>
+            <div class="analysis-title">
+                📋 Analysis History
+            </div>
+            <div id="historyList">
+                <p style="text-align: center; color: #666; padding: 2rem;">No analysis history yet</p>
+            </div>
+        </div>
+    </div>
+
     <script src="app.js"></script>
 </body>
 </html>
- 
- 
