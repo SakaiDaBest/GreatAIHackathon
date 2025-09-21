@@ -40,7 +40,7 @@ User (Browser)
                    ├── Translates output back to source language
                    └── Returns JSON response to frontend
 
-##📂 **Project Structure**
+## 📂 Project Structure
 ├── WebExtension  
 │     ├── icons                # Contians images used 
 │     ├── background.js               
@@ -59,7 +59,7 @@ User (Browser)
 └── lambda
     └──lambda_function.py   # Lambda backend function (news analysis pipeline)
 
-##💻 **Usage**
+## 💻 Usage
 1. Clone the repository
 git clone https://github.com/your-username/GreatAIHackathon.git
 cd GreatAIHackathon
@@ -81,7 +81,7 @@ Open https://d30hw8svzk5x6g.cloudfront.net
 Paste any news headline or article
 Click Analyze — get classification, confidence score, and AI reasoning in real time
 
-##🌍 **Multilingual Support**
+## 🌍 Multilingual Support
 Input language automatically detected
 Output reasoning returned in the same language
 Supported Languages: EN, ZH, JA, KO, FR, ES, DE, PT (Amazon Translate auto-detection)
