@@ -44,6 +44,7 @@ User (Browser)
 │
 ├── WebExtension  
 │     ├── icons                # Contians images used 
+
 │     ├── background.js               
 │     ├── manifest.js     
 │     ├── popup.html  
