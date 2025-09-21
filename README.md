@@ -42,6 +42,7 @@ User (Browser)
 ```
 
 ## 📂 Project Structure
+```
 │
 ├── WebExtension  
 │     ├── icons                
@@ -51,15 +52,16 @@ User (Browser)
 │     └── popup.js
 │         
 ├── Website  
-│     ├── index.html           
-│     ├── app.js               
-│     ├── styles.css           
-│     └── iconaivenger.png     
+│     ├── index.html           # Main webpage UI
+│     ├── app.js               # Core logic: API calls, analysis parsing, language auto-detection
+│     ├── styles.css           # Decoration for the website
+│     └── iconaivenger.png     # App icon (used in the browser tab)
 │
 ├── Problem statement.txt # Original hackathon brief
 │
 └── lambda
     └──lambda_function.py   # Lambda backend function (news analysis pipeline)
+```
 
 ## 💻 Usage
 1. Clone the repository
