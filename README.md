@@ -43,8 +43,7 @@ User (Browser)
 ## 📂 Project Structure
 │
 ├── WebExtension  
-│     ├── icons                # Contians images used 
-
+│     ├── icons                
 │     ├── background.js               
 │     ├── manifest.js     
 │     ├── popup.html  
