@@ -22,7 +22,7 @@ Using **AI-powered analysis** (AWS Bedrock + Knowledge Base + Real-Time Search),
 
 ## 🛠️ Architecture  
 
-
+'''
 User (Browser)
    │
    ├──> CloudFront (CDN)
@@ -39,6 +39,7 @@ User (Browser)
                    ├── Adds fallback live search context (Tavily API)
                    ├── Translates output back to source language
                    └── Returns JSON response to frontend
+'''
 
 ## 📂 Project Structure
 │
