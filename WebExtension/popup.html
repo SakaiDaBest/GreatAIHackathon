@@ -1,166 +1,319 @@
-
 <!DOCTYPE html>
 <html>
 <head>
   <meta charset="utf-8">
   <style>
-    body {
-      width: 320px;
-      padding: 0;
+    * {
       margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      width: 350px;
+      min-height: 400px;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
       background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 50%, #60a5fa 100%);
       color: white;
-      border-radius: 12px;
       overflow: hidden;
     }
-    .hero-section {
+    
+    .header {
       text-align: center;
-      padding: 20px;
-      background: linear-gradient(135deg, rgba(0,0,0,0.2), rgba(0,0,0,0.1));
+      padding: 25px 20px;
+      background: rgba(0,0,0,0.2);
+      position: relative;
+      overflow: hidden;
     }
+    
+    .header::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+      animation: pulse 3s infinite;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 0.5; }
+      50% { transform: scale(1.1); opacity: 0.8; }
+    }
+    
     .logo {
-      font-size: 28px;
+      font-size: 32px;
       margin-bottom: 8px;
-      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+      position: relative;
+      z-index: 1;
     }
+    
     .tagline {
-      font-size: 16px;
-      font-weight: 600;
-      margin-bottom: 4px;
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 5px;
+      position: relative;
+      z-index: 1;
     }
+    
     .subtitle {
       font-size: 12px;
       opacity: 0.9;
+      position: relative;
+      z-index: 1;
     }
+    
+    .stats-section {
+      padding: 20px;
+    }
+    
     .stats-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      padding: 16px 20px;
+      gap: 15px;
+      margin-bottom: 20px;
     }
+    
     .stat-card {
       background: rgba(255,255,255,0.15);
-      border-radius: 8px;
-      padding: 12px;
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 12px;
+      padding: 15px;
       text-align: center;
       backdrop-filter: blur(10px);
-      border: 1px solid rgba(255,255,255,0.2);
+      transition: transform 0.2s, box-shadow 0.2s;
     }
+    
+    .stat-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+    }
+    
     .stat-number {
-      font-size: 20px;
+      font-size: 24px;
       font-weight: bold;
-      margin-bottom: 4px;
+      margin-bottom: 5px;
+      background: linear-gradient(45deg, #fbbf24, #f59e0b);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
+    
     .stat-label {
       font-size: 10px;
       opacity: 0.9;
+      font-weight: 500;
+      line-height: 1.2;
     }
-    .actions-section {
-      padding: 16px 20px;
+    
+    .instructions {
+      background: rgba(255,255,255,0.1);
+      border-radius: 12px;
+      padding: 15px;
+      margin-bottom: 20px;
+      border: 1px solid rgba(255,255,255,0.2);
     }
+    
+    .instructions-title {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .instruction-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+      font-size: 12px;
+      opacity: 0.9;
+    }
+    
+    .instruction-number {
+      background: rgba(255,255,255,0.2);
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: bold;
+      flex-shrink: 0;
+    }
+    
     .actions {
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 12px;
     }
+    
     .btn {
       background: rgba(255,255,255,0.2);
       border: 1px solid rgba(255,255,255,0.3);
       color: white;
-      padding: 12px 16px;
-      border-radius: 8px;
+      padding: 14px 18px;
+      border-radius: 10px;
       cursor: pointer;
       font-size: 14px;
-      font-weight: 500;
-      transition: all 0.2s;
+      font-weight: 600;
+      transition: all 0.3s;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
+      gap: 10px;
+      text-decoration: none;
+      position: relative;
+      overflow: hidden;
     }
+    
+    .btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+      transition: left 0.5s;
+    }
+    
+    .btn:hover::before {
+      left: 100%;
+    }
+    
     .btn:hover {
       background: rgba(255,255,255,0.3);
-      transform: translateY(-1px);
-      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.3);
     }
-    .shortcut-tip {
+    
+    .btn-primary {
+      background: linear-gradient(135deg, #10b981, #059669);
+      border-color: rgba(16, 185, 129, 0.5);
+    }
+    
+    .btn-primary:hover {
+      background: linear-gradient(135deg, #059669, #047857);
+    }
+    
+    .footer {
       text-align: center;
-      font-size: 11px;
-      opacity: 0.8;
-      padding: 12px 20px;
-      background: rgba(0,0,0,0.1);
+      padding: 15px 20px;
+      background: rgba(0,0,0,0.2);
       border-top: 1px solid rgba(255,255,255,0.1);
     }
-    .avenger-quote {
+    
+    .keyboard-shortcut {
+      font-size: 11px;
+      opacity: 0.8;
+      margin-bottom: 8px;
+    }
+    
+    .hero-quote {
       font-style: italic;
       font-size: 11px;
-      text-align: center;
       opacity: 0.8;
-      padding: 0 20px 12px;
+    }
+    
+    .loading {
+      display: none;
+      text-align: center;
+      padding: 20px;
+    }
+    
+    .spinner {
+      width: 30px;
+      height: 30px;
+      border: 3px solid rgba(255,255,255,0.3);
+      border-top: 3px solid white;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 10px;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
     }
   </style>
 </head>
 <body>
-  <div class="hero-section">
+  <div class="header">
     <div class="logo">⚡ AIvengers</div>
     <div class="tagline">Assemble Against Fake News!</div>
     <div class="subtitle">AI-Powered Fact Checking Heroes</div>
   </div>
   
-  <div class="stats-grid">
-    <div class="stat-card">
-      <div class="stat-number">1,247</div>
-      <div class="stat-label">THREATS ANALYZED TODAY</div>
+  <div class="stats-section">
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-number" id="facts-checked">0</div>
+        <div class="stat-label">FACTS CHECKED BY YOU</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">1,247</div>
+        <div class="stat-label">GLOBAL CHECKS TODAY</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">94.2%</div>
+        <div class="stat-label">ACCURACY RATE</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">24/7</div>
+        <div class="stat-label">HEROES ON DUTY</div>
+      </div>
     </div>
-    <div class="stat-card">
-      <div class="stat-number">156</div>
-      <div class="stat-label">MISINFORMATION DEFEATED</div>
+    
+    <div class="instructions">
+      <div class="instructions-title">
+        <span>🎯</span>
+        <span>How to Use AIvengers:</span>
+      </div>
+      <div class="instruction-item">
+        <div class="instruction-number">1</div>
+        <div>Highlight suspicious text on any website</div>
+      </div>
+      <div class="instruction-item">
+        <div class="instruction-number">2</div>
+        <div>Right-click and select "⚡ AIvengers Assemble!"</div>
+      </div>
+      <div class="instruction-item">
+        <div class="instruction-number">3</div>
+        <div>Get instant AI-powered analysis</div>
+      </div>
     </div>
-    <div class="stat-card">
-      <div class="stat-number">94.2%</div>
-      <div class="stat-label">MISSION SUCCESS RATE</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-number">24/7</div>
-      <div class="stat-label">HEROES ON DUTY</div>
-    </div>
-  </div>
-  
-  <div class="actions-section">
+    
     <div class="actions">
-      <button class="btn" onclick="window.open('https://your-website.com', '_blank')">
+      <a href="#" class="btn btn-primary" id="open-website">
         <span>🌐</span>
-        <span>Launch Command Center</span>
+        <span>Open AIvengers HQ</span>
+      </a>
+      <button class="btn" id="test-extension">
+        <span>🧪</span>
+        <span>Test Extension</span>
       </button>
-      <button class="btn" onclick="openOptionsPage()">
-        <span>⚙️</span>
-        <span>Hero Settings</span>
-      </button>
-      <button class="btn" onclick="window.open('https://your-website.com/help', '_blank')">
-        <span>🎓</span>
-        <span>Training Academy</span>
-      </button>
+      <a href="https://github.com/your-username/aivengers-extension" class="btn" target="_blank">
+        <span>⭐</span>
+        <span>Star on GitHub</span>
+      </a>
     </div>
   </div>
 
-  <div class="avenger-quote">
-    "With great power comes great responsibility to fact-check!"
-  </div>
-  
-  <div class="shortcut-tip">
-    💡 Select text & right-click, or use Ctrl+Shift+A to assemble!
+  <div class="footer">
+    <div class="keyboard-shortcut">
+      💡 Pro Tip: Use Ctrl+Shift+A after selecting text
+    </div>
+    <div class="hero-quote">
+      "With great power comes great responsibility to fact-check!"
+    </div>
   </div>
 
-  <script>
-    function openOptionsPage() {
-      if (chrome.runtime.openOptionsPage) {
-        chrome.runtime.openOptionsPage();
-      } else {
-        window.open('options.html');
-      }
-    }
-  </script>
+  <script src="popup.js"></script>
 </body>
 </html>
-
