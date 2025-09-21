@@ -13,10 +13,10 @@ function animateProgress() {
     const progressBar = document.getElementById('progressBar');
     const progressText = document.getElementById('progressText');
     const steps = [
-        { width: 25, text: 'Querying Knowledge Base', delay: 300 },
-        { width: 50, text: 'Searching live sources', delay: 400 },
-        { width: 75, text: 'AI analysis in progress', delay: 500 },
-        { width: 95, text: 'Finalizing results', delay: 200 }
+        { width: 25, text: 'Analyzing', delay: 300 },
+        { width: 50, text: 'Processing', delay: 300 },
+        { width: 75, text: 'Checking', delay: 300 },
+        { width: 95, text: 'Finalizing result', delay: 25 }
     ];
 
     let currentStep = 0;
@@ -188,18 +188,7 @@ if (localStorage.getItem('darkMode') === 'true') {
     }
 }
 
-// Enhanced input validation
-function isValidInput(text) {
-    // Check for minimum meaningful content
-    if (text.length < 10) return false;
 
-    // Check for problematic patterns
-    const numbersOnlyPattern = /^[0-9\s\.,!?]+$/;
-    const tooManySpecialChars = /[!@#$%^&*()_+=\[\]{}|;'",./<>?~`]{5,}/;
-    const gibberish = /^[bcdfghjklmnpqrstvwxyzBCDFGHJKLMNPQRSTVWXYZ\s]{20,}$/.test(text.replace(/[aeiou]/gi, ''));
-
-    return !numbersOnlyPattern.test(text) && !tooManySpecialChars.test(text) && !gibberish;
-}
 
 // Enhanced keyboard support
 document.addEventListener('DOMContentLoaded', function() {
@@ -230,17 +219,6 @@ document.getElementById('newsForm').addEventListener('submit', async function (e
 
     if (!newsText) {
         alert('Please enter some news text to analyze.');
-        return;
-    }
-
-    // Enhanced input validation
-    if (!isValidInput(newsText)) {
-        resultDiv.className = 'result fake';
-        resultText.innerHTML = '<strong>⚠️ Input Error</strong><br><small>Please provide meaningful news text with proper sentences. Avoid very short text, numbers only, or excessive special characters.</small>';
-        confidenceDiv.textContent = '';
-        trustBadgeDiv.textContent = '';
-        trustBadgeDiv.className = 'trust-badge';
-        resultDiv.style.display = 'block';
         return;
     }
 
