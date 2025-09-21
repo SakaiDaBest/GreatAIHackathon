@@ -36,7 +36,7 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
     const selectedText = info.selectionText.trim();
 
     if (selectedText.length > 0) {
-      const websiteUrl = "https://d12hghxv1uzcvn.cloudfront.net/";
+      const websiteUrl = "https://d30hw8svzk5x6g.cloudfront.net/";
 
       // Open analyzer site
       chrome.tabs.create({ url: websiteUrl, active: true }, (newTab) => {
@@ -77,7 +77,7 @@ chrome.commands.onCommand.addListener(async (command) => {
       const selectedText = results[0].result;
 
       if (selectedText && selectedText.length > 0) {
-        const websiteUrl = "https://d12hghxv1uzcvn.cloudfront.net/";
+        const websiteUrl = "https://d30hw8svzk5x6g.cloudfront.net/";
 
         // Open analyzer site
         chrome.tabs.create({ url: websiteUrl, active: true }, (newTab) => {
