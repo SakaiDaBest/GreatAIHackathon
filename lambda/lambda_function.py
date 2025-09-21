@@ -361,12 +361,7 @@ def lambda_handler(event, context):
             }
         
         news_text = request_body["text"].strip()
-        if not news_text or len(news_text) < 5:
-            return {
-                "statusCode": 400,
-                "headers": CORS_HEADERS,
-                "body": json.dumps({"error": "Text field cannot be empty or too short"})
-            }
+
         
         if len(news_text) > 2000:  
             return {
