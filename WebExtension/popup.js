@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', async function() {
   setupEventListeners();
   
   // Load website URL
-  const websiteUrl = "https://d12hghxv1uzcvn.cloudfront.net/";
+  const websiteUrl = "https://d30hw8svzk5x6g.cloudfront.net/";
   document.getElementById('open-website').href = websiteUrl;
 });
 
