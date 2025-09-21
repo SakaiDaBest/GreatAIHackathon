@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>News Detector</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='45' fill='%23667eea'/><text x='50' y='65' font-size='50' text-anchor='middle' fill='white'>📰</text></svg>">
+    <link rel="icon" type="image/png" href="iconaivenger.png">
     <style>
         * {
             margin: 0;
@@ -372,40 +372,131 @@
 
         .theme-toggle {
             position: fixed;
-            top: 20px;
-            right: 20px;
+            top: 15px;
+            right: 15px;
             background: rgba(255,255,255,0.9);
             border: none;
             border-radius: 50%;
-            width: 50px;
-            height: 50px;
+            width: 40px;
+            height: 40px;
             cursor: pointer;
-            font-size: 20px;
+            font-size: 16px;
             z-index: 1000;
             transition: all 0.3s ease;
         }
 
         .theme-toggle:hover {
-            transform: scale(1.1);
+            transform: scale(1.05);
+        }
+
+        .language-btn {
+            position: fixed;
+            top: 105px;
+            right: 15px;
+            background: rgba(255,255,255,0.9);
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            font-size: 16px;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .language-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .language-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 10001;
+        }
+
+        .language-content {
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.2);
+            width: 90%;
+            max-width: 400px;
+            position: relative;
+        }
+
+        .language-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .language-option {
+            padding: 0.8rem;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .language-option:hover {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+
+        .language-option.active {
+            border-color: #667eea;
+            background: #667eea;
+            color: white;
+        }
+
+        .language-notification {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #667eea;
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            z-index: 10002;
+            display: none;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from { transform: translateX(-50%) translateY(-100%); }
+            to { transform: translateX(-50%) translateY(0); }
         }
 
         .history-btn {
             position: fixed;
-            top: 80px;
-            right: 20px;
+            top: 60px;
+            right: 15px;
             background: rgba(255,255,255,0.9);
             border: none;
             border-radius: 50%;
-            width: 50px;
-            height: 50px;
+            width: 40px;
+            height: 40px;
             cursor: pointer;
-            font-size: 20px;
+            font-size: 16px;
             z-index: 1000;
             transition: all 0.3s ease;
         }
 
         .history-btn:hover {
-            transform: scale(1.1);
+            transform: scale(1.05);
         }
 
         .history-modal {
@@ -545,6 +636,26 @@
             color: #fff;
         }
 
+        body.dark .language-btn {
+            background: rgba(30, 30, 50, 0.9);
+            color: #fff;
+        }
+
+        body.dark .language-content {
+            background: rgba(30, 30, 50, 0.95);
+            color: #fff;
+        }
+
+        body.dark .language-option {
+            background: rgba(50, 50, 70, 0.9);
+            border-color: #555;
+            color: #fff;
+        }
+
+        body.dark .language-option:hover {
+            background: rgba(102, 126, 234, 0.3);
+        }
+
         body.dark .history-btn {
             background: rgba(30, 30, 50, 0.9);
             color: #fff;
@@ -609,14 +720,23 @@
                 font-size: 2rem;
             }
 
-            .theme-toggle, .history-btn {
-                width: 45px;
-                height: 45px;
-                font-size: 18px;
+            .theme-toggle, .history-btn, .language-btn {
+                width: 35px;
+                height: 35px;
+                font-size: 14px;
+                right: 10px;
+            }
+
+            .theme-toggle {
+                top: 10px;
             }
 
             .history-btn {
-                top: 75px;
+                top: 50px;
+            }
+
+            .language-btn {
+                top: 90px;
             }
         }
     </style>
@@ -634,11 +754,12 @@
     </div>
 
     <div class="container">
-        <h1>🔍 News Detector</h1>
-        <p class="subtitle">AI-powered analysis using Knowledge Base and live search</p>
+        <h1>🔍 <span data-translate="title">News Detector</span></h1>
+        <p class="subtitle" data-translate="subtitle">AI-powered analysis using Knowledge Base and live search</p>
 
         <button class="theme-toggle" onclick="toggleTheme()" title="Toggle Dark/Light Mode">🌙</button>
         <button class="history-btn" onclick="toggleHistory()" title="View Analysis History">📋</button>
+        <button class="language-btn" onclick="toggleLanguage()" title="Change Language">🌍</button>
 
         <div class="stats">
             <div class="stat-item">
@@ -657,10 +778,10 @@
 
         <form id="newsForm">
             <div class="input-group">
-                <label for="newsText">Enter news article or headline:</label>
-                <textarea id="newsText" placeholder="Paste article or headline here... (Ctrl+Enter to submit)" aria-label="Enter news text for analysis"></textarea>
+                <label for="newsText" data-translate="input-label">Enter news article or headline:</label>
+                <textarea id="newsText" data-translate-placeholder="input-placeholder" placeholder="Paste article or headline here... (Ctrl+Enter to analyze)" aria-label="Enter news text for analysis"></textarea>
             </div>
-            <button type="submit" class="btn" aria-label="Analyze news for authenticity">Analyze News</button>
+            <button type="submit" class="btn" data-translate="analyze-btn" aria-label="Analyze news for authenticity">Analyze News</button>
             <div class="loading" id="loading">
                 <div class="progress-container">
                     <div class="progress-bar" id="progressBar"></div>
@@ -685,14 +806,14 @@
         <div class="modal-content" onclick="event.stopPropagation()">
             <button class="modal-close" onclick="closeModal()">×</button>
             <div class="analysis-title">
-                🤖 AI Analysis Breakdown
+                🤖 <span data-translate="ai-breakdown">AI Analysis Breakdown</span>
             </div>
             <div class="analysis-section">
-                <h4>Probability Assessment:</h4>
+                <h4 data-translate="probability-assessment">Probability Assessment:</h4>
                 <div id="percentageDisplay" class="analysis-score"></div>
             </div>
             <div class="analysis-section">
-                <h4>Detailed Analysis:</h4>
+                <h4 data-translate="detailed-analysis">Detailed Analysis:</h4>
                 <div id="analysisSummary" class="analysis-score"></div>
             </div>
         </div>
@@ -703,13 +824,35 @@
         <div class="history-content" onclick="event.stopPropagation()">
             <button class="modal-close" onclick="closeHistory()">×</button>
             <div class="analysis-title">
-                📋 Analysis History
+                📋 <span data-translate="history">Analysis History</span>
             </div>
             <div id="historyList">
-                <p style="text-align: center; color: #666; padding: 2rem;">No analysis history yet</p>
+                <p style="text-align: center; color: #666; padding: 2rem;" data-translate="no-history">No analysis history yet</p>
             </div>
         </div>
     </div>
+
+    <!-- Language Modal -->
+    <div id="languageModal" class="language-modal" onclick="closeLanguage(event)">
+        <div class="language-content" onclick="event.stopPropagation()">
+            <button class="modal-close" onclick="closeLanguage()">×</button>
+            <div class="analysis-title">
+                🌍 <span data-translate="select-language">Select Language</span>
+            </div>
+            <div class="language-grid">
+                <div class="language-option" onclick="changeLanguage('en')">🇺🇸 English</div>
+                <div class="language-option" onclick="changeLanguage('es')">🇪🇸 Español</div>
+                <div class="language-option" onclick="changeLanguage('fr')">🇫🇷 Français</div>
+                <div class="language-option" onclick="changeLanguage('de')">🇩🇪 Deutsch</div>
+                <div class="language-option" onclick="changeLanguage('zh')">🇨🇳 中文</div>
+                <div class="language-option" onclick="changeLanguage('ja')">🇯🇵 日本語</div>
+                <div class="language-option" onclick="changeLanguage('ko')">🇰🇷 한국어</div>
+                <div class="language-option" onclick="changeLanguage('pt')">🇵🇹 Português</div>
+            </div>
+        </div>
+    </div>
+
+    <div id="languageNotification" class="language-notification"></div>
 
     <script src="app.js"></script>
 </body>
