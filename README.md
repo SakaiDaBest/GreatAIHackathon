@@ -65,9 +65,10 @@ User (Browser)
 
 ## 💻 Usage
 1. Clone the repository
+```
 git clone https://github.com/your-username/GreatAIHackathon.git
 cd GreatAIHackathon
-
+```
 2. Deploy Frontend
 Upload index.html, app.js, and assets to your S3 bucket.
 Invalidate CloudFront cache to deploy changes.
