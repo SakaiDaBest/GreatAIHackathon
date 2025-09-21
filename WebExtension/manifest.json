@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "AIvengers - AI-Powered Fact Checker",
-  "version": "1.0.0",
-  "description": "Right-click any text to instantly fact-check with AIvengers' AI-powered misinformation detection. Assemble against fake news!",
+  "name": "AIvengers - Quick Fact Check",
+  "version": "1.0.1",
+  "description": "Right-click any text to instantly fact-check it or paste the analyzed version back into the page. Assemble against fake news!",
   "permissions": [
     "contextMenus",
     "activeTab",
@@ -10,34 +10,35 @@
     "scripting"
   ],
   "host_permissions": [
-    "https://*/*",
-    "http://*/*"
+    "<all_urls>"
   ],
   "background": {
     "service_worker": "background.js"
   },
-  "content_scripts": [
-    {
-      "matches": ["<all_urls>"],
-      "js": ["content.js"],
-      "css": ["styles.css"]
-    }
-  ],
   "action": {
     "default_popup": "popup.html",
-    "default_title": "AIvengers - Assemble Against Fake News!"
+    "default_title": "AIvengers - Assemble Against Fake News!",
+    "default_icon": {
+      "16": "icons/iconaivenger (16).png",
+      "32": "icons/iconaivenger (32).png",
+      "48": "icons/iconaivenger (48).png",
+      "128": "icons/iconaivenger (128).png"
+    }
   },
   "icons": {
-    "16": "icons/icon16.png",
-    "32": "icons/icon32.png",
-    "48": "icons/icon48.png",
-    "128": "icons/icon128.png"
+    "16": "icons/iconaivenger (16).png",
+    "32": "icons/iconaivenger (32).png",
+    "48": "icons/iconaivenger (48).png",
+    "128": "icons/iconaivenger (128).png"
   },
-  "web_accessible_resources": [
-    {
-      "resources": ["popup.html", "styles.css"],
-      "matches": ["<all_urls>"]
+  "commands": {
+    "fact-check-selection": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+A"
+      },
+      "description": "Fact-check selected text with AIvengers"
     }
-  ]
+  }
 }
+
 
